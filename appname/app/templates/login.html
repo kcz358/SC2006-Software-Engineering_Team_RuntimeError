@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="container">
+    {% if create_account %}
+    <div class="alert alert-success">
+      Created account successful
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+
+    <div class="row text-center m-4 p-4 border-bottom"><h1>Sign in</h1></div>
+    <form action="{{url_for('main.login')}}" method="post">
+      {{form.hidden_tag()}}
+    <div class="row g-3 align-items-center m-4 justify-content-center">
+        <div class="col-2">
+          <label for="username" class="col-form-label">{{form.username.label}}</label>
+        </div>
+        <div class="col-4">
+          {{form.username(id='username', class="form-control")}}
+        </div>
+    </div>
+
+
+    <div class="row g-3 align-items-center m-4 justify-content-center">
+        <div class="col-2">
+          <label for="password" class="col-form-label">{{form.password.label}}</label>
+        </div>
+        <div class="col-4">
+          {{form.password(id='password', class="form-control")}}
+        </div>
+    </div>
+    
+
+    <div class="m-4 text-center">
+      {{form.submit(class="btn btn-primary", style="background-color: #686c3c; border:0cm;")}}
+    </div>
+    </form>
+
+    
+    <div class="m-4 text-center">
+        <button class="btn btn-primary", style="background-color: #c6c9aa; border:0cm;">
+            <a href="/register" class="text-decoration-none text-white">Sign up</a>
+        </button>
+    </div>
+
+</div>
+
+{% endblock %}
