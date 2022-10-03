@@ -1,0 +1,17 @@
+#navbar-item li{
+  border-bottom: 3px solid black;
+  list-style-type: none;
+  margin:0px;
+  padding: 0px;
+}
+#navbar-item li p{
+  display: inline-block;
+  margin: 10px;
+  padding: auto;
+  font-size: 20px;
+}
+
+#Maincarousel{
+  width: auto;
+  height: auto;
+}

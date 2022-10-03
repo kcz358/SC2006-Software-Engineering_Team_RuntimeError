@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="container">
+    <div class="row text-center m-4 p-4 border-bottom"><h1>Sign up</h1></div>
+
+    {% if duplicate_username %}
+        <div class="alert alert-danger" role="alert">Username Already exists, please choose another one</div>
+    {% endif %}
+
+    <form action="{{url_for('main.register')}}" method="post">
+        {{form.hidden_tag()}}
+        <div class="row g-3 align-items-center m-4 justify-content-center">
+            <div class="col-2">
+              <label for="username" class="col-form-label">{{form.username.label}}</label>
+            </div>
+            <div class="col-4">
+              {{form.username(id='username', class="form-control" + (" is-invalid" if form.username.errors else ""))}}
+              {% if form.username.errors %}
+              {% for username_error in form.username.errors %}
+              <div class="invalid-feedback">{{username_error}}</div>
+              {% endfor %}
+              {% endif %}
+            </div>
+        </div>
+    
+        <div class="row g-3 align-items-center m-4 justify-content-center">
+            <div class="col-2">
+              <label for="password" class="col-form-label">{{form.password.label}}</label>
+            </div>
+            <div class="col-4">
+              {{form.password(id='password', class="form-control")}}
+            </div>
+        </div>
+
+        <div class="row g-3 align-items-center m-4 justify-content-center form-group">
+            <div class="col-2">
+              <label for="confirm" class="col-form-label">{{form.confirm.label}}</label>
+            </div>
+            <div class="col-4">
+                {{form.confirm(id='confirm', class="form-control" + (" is-invalid" if form.confirm.errors else ""))}}
+                {% if form.confirm.errors %}
+                {% for confirm_error in form.confirm.errors %}
+                <div class="invalid-feedback">{{ confirm_error }}</div>
+                {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row g-3 align-items-center m-4 justify-content-center form-group">
+            <div class="col-2">
+                <label for="email" class="col-form-label">{{form.email.label}}</label>
+            </div>
+            <div class="col-4">
+                {{form.email(id='email', class="form-control"  + (" is-invalid" if form.email.errors else ""))}}
+                {% if form.email.errors %}
+                {% for email_error in form.email.errors %}
+                <div class="invalid-feedback">{{ email_error }}</div>
+                {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="m-4 text-center">
+            {{form.signup(class="btn btn-primary", style="background-color: #686c3c; border:0cm;")}}
+        </div>
+
+    </form>
+</div>
+
+{% endblock %}
