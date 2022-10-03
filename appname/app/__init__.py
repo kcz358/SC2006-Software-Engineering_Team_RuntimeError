@@ -17,7 +17,8 @@ login_manager.login_view = 'main.login'
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = "secret keys"
-    app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://Admin:password@localhost/userdb"
+    #Set your own sql server url based on the user you create and the database you use
+    #app.config['SQLALCHEMY_DATABASE_URI'] = ""
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     #Setup Your own smtp mail server here
     #app.config['MAIL_SERVER']=''
