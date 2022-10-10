@@ -20,6 +20,7 @@ def main_page():
 def logout():
     session.pop('username', None)
     logout_user()
+    flash("Log out successful")
     return redirect(url_for("main.main_page"))
 
 
