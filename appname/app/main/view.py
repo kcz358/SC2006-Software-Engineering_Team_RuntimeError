@@ -14,11 +14,13 @@ def before_request():
 
 @main.route('/', methods=['GET','POST'])
 def main_page():
-    if request.method == 'POST':
-        session.pop('username', None)
-        logout_user()
-        return render_template('main_page.html')
     return render_template('main_page.html')
+
+@main.route("/logout", methods=['GET', 'POST'])
+def logout():
+    session.pop('username', None)
+    logout_user()
+    return redirect(url_for("main.main_page"))
 
 
 @main.route("/login", methods=['GET', 'POST'])
