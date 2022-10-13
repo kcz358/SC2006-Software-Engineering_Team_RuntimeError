@@ -1,0 +1,36 @@
+# Metadata for Lighting Waste Collection Points
+---
+Identifier: '8ab65554-8baf-449a-8c93-f544b797c532'
+Name: 'lighting-waste-collection-points'
+Title: 'Lighting Waste Collection Points'
+Description: 'Lighting waste recycling near you.'
+Topics:
+  - 'Environment'
+Keywords:
+  - 'lighting waste'
+  - 'onemap'
+  - 'themes'
+Publisher:
+  Name: 'National Environment Agency'
+  Admin 1:
+    Name: 'Anabel Lee'
+    Department: 'NATIONAL ENVIRONMENT AGENCY'
+    Email: 'anabel_lee@nea.gov.sg'
+Sources:
+  - 'National Environment Agency'
+License: 'https://data.gov.sg/open-data-licence'
+Frequency: 'Annual'
+Last Updated: '2019-10-09T11:47:35.792813'
+Resources:
+  -
+    Identifier: 'ca656e2c-59e2-429e-86c6-e253ba3a7272'
+    Title: 'Lighting Waste Collection Points (KML)'
+    Url: 'https://geo.data.gov.sg/lighting/2019/10/01/kml/lighting.kml'
+    Format: 'KML'
+    Last Updated: '2019-09-30T16:00:00'
+  -
+    Identifier: 'ee339b77-0026-4e99-a006-3ba6afc517c1'
+    Title: 'Lighting Waste Collection Points (GEOJSON)'
+    Url: 'https://geo.data.gov.sg/lighting/2019/10/01/geojson/lighting.geojson'
+    Format: 'GeoJSON'
+    Last Updated: '2019-09-30T16:00:00'

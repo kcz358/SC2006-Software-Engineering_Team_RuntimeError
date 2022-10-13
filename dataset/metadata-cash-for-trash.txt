@@ -1,0 +1,36 @@
+# Metadata for Cash For Trash
+---
+Identifier: '92075ab2-e69b-4a37-b5fd-09eaadbca3d2'
+Name: 'cash-for-trash'
+Title: 'Cash For Trash'
+Description: 'Cash For Trash stations near you.'
+Topics:
+  - 'Environment'
+Keywords:
+  - 'Cash For Trash'
+  - 'onemap'
+  - 'themes'
+Publisher:
+  Name: 'National Environment Agency'
+  Admin 1:
+    Name: 'Anabel Lee'
+    Department: 'NATIONAL ENVIRONMENT AGENCY'
+    Email: 'anabel_lee@nea.gov.sg'
+Sources:
+  - 'National Environment Agency'
+License: 'https://data.gov.sg/open-data-licence'
+Frequency: 'Half-yearly'
+Last Updated: '2019-03-06T00:22:13.385225'
+Resources:
+  -
+    Identifier: '122c59df-04e8-4247-a864-f2386db9a907'
+    Title: 'Cash For Trash (KML)'
+    Url: 'https://geo.data.gov.sg/cashfortrash/2019/02/27/kml/cashfortrash.kml'
+    Format: 'KML'
+    Last Updated: '2019-02-26T16:00:00'
+  -
+    Identifier: 'a67212bd-486a-4334-987f-675649f5f731'
+    Title: 'Cash For Trash (GEOJSON)'
+    Url: 'https://geo.data.gov.sg/cashfortrash/2019/02/27/geojson/cashfortrash.geojson'
+    Format: 'GeoJSON'
+    Last Updated: '2019-02-26T16:00:00'
