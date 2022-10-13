@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, ValidationError
+from wtforms import StringField, SubmitField, PasswordField, ValidationError, SelectField
 from wtforms.validators import DataRequired, EqualTo, Email, Length, Regexp
 from ..models import Userinfo
 
@@ -24,3 +24,8 @@ class RegisterForm(FlaskForm):
     def validate_username(self, field):
         if Userinfo.query.filter_by(username = field.data).first():
             raise ValidationError("Username already exists")
+
+class SearchForm(FlaskForm):
+    category = SelectField(label="Category", validators=[DataRequired()], choices=[('eWaste', 'E-Waste'), ('clothing', 'Clothing'), ('plasticBottle', 'Plastic Bottle')])
+    location = StringField(label="Location", validators=[DataRequired()])
+    search = SubmitField(label="Search")
