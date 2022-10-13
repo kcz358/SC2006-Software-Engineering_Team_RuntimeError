@@ -2,7 +2,7 @@ from flask import request, render_template, redirect, g, url_for, session, flash
 from flask_login import login_required, logout_user, login_user, current_user
 from ..mail import send_mail
 from . import main
-from .forms import LoginForm, RegisterForm
+from .forms import LoginForm, RegisterForm, SearchForm
 from .. import db
 from ..models import Userinfo
 
@@ -83,3 +83,17 @@ def confirm(token):
 @login_required
 def account():
     return render_template("account.html")
+
+@main.route("/findabin", methods=['GET', 'POST'])
+# @login_required
+def findBin():
+    search_form = SearchForm()
+    has_searched = False
+    locations_found = False
+    category = None
+    location = None
+    if request.method == 'POST' and search_form.validate():
+        category = search_form.category.data
+        location = search_form.location.data
+        has_searched = True
+    return render_template("findBin.html", form=search_form, has_searched= has_searched, searched=(category, location))
