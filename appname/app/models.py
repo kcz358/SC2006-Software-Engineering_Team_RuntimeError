@@ -43,13 +43,29 @@ class Userinfo(UserMixin, db.Model):
         db.session.add(self)
         return True
     
+class Article(db.Model):
+    id=db.Column(db.Integer(),primary_key=True)
+    author=db.Column(db.String(),nullable=False)
+    date=db.Column(db.String(),nullable=False)
+    caption=db.Column(db.String(),nullable=False)
+    genre=db.Column(db.String(),nullable=False)
+    body=db.Column(db.String(),nullable=True)
+    
+    def getAuthor(self):
+        return self.author
+    
+    def getDate(self):
+        return self.date
+
+    
+    def getGenre(self):
+        return self.genre
+
+    def getBody(self):
+        return self.body
+
+    
 
 @login_manager.user_loader
 def load_user(userid):
     return Userinfo.query.get(int(userid))
-
-# class Bin():
-#     name =
-#     category =
-#     address =
-#     description =
