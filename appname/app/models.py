@@ -47,3 +47,9 @@ class Userinfo(UserMixin, db.Model):
 @login_manager.user_loader
 def load_user(userid):
     return Userinfo.query.get(int(userid))
+
+# class Bin():
+#     name =
+#     category =
+#     address =
+#     description =
