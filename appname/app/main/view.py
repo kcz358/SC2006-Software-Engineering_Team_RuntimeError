@@ -5,6 +5,11 @@ from . import main
 from .forms import LoginForm, RegisterForm, SearchForm
 from .. import db
 from ..models import Userinfo
+from onemapsg import OneMapClient
+import pandas
+import requests
+
+
 
 @main.before_request
 def before_request():
@@ -84,6 +89,15 @@ def confirm(token):
 def account():
     return render_template("account.html")
 
+def getcoordinates(address):
+    req = requests.get('https://developers.onemap.sg/commonapi/search?searchVal='+address+'&returnGeom=Y&getAddrDetails=Y&pageNum=1')
+    resultsdict = eval(req.text)
+    if len(resultsdict['results'])>0:
+        return resultsdict['results'][0]['LATITUDE'], resultsdict['results'][0]['LONGITUDE']
+    else:
+        pass
+
+
 @main.route("/findabin", methods=['GET', 'POST'])
 # @login_required
 def findBin():
@@ -92,8 +106,16 @@ def findBin():
     locations_found = False
     category = None
     location = None
+    lat = None
+    long = None
     if request.method == 'POST' and search_form.validate():
         category = search_form.category.data
         location = search_form.location.data
         has_searched = True
-    return render_template("findBin.html", form=search_form, has_searched= has_searched, searched=(category, location))
+        lat, long = getcoordinates(location)
+    return render_template("findBin.html", form=search_form, has_searched=has_searched, searched=(category, location), search_results=(lat,long))
+
+@main.route("/map")
+def viewMap():
+
+    return render_template("mapView.html")

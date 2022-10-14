@@ -8,11 +8,15 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous.serializer import Serializer
 import os
+import pandas as pd
 
 mail = Mail()
 db = SQLAlchemy()
 login_manager = LoginManager()
 login_manager.login_view = 'main.login'
+
+
+
 
 def create_app():
     app = Flask(__name__)

@@ -64,7 +64,9 @@
 
       </form>
       {% if has_searched==True %}
+      {{df}}
         <p>Showing bins for {{searched[0]}} near {{searched[1]}}</p>
+        <p>results: {{search_results[0]}}, {{search_results[1]}}</p>
         <br>
         <div>
           <div class="row justify-content-evenly" style="padding-bottom:15px">
@@ -132,7 +134,6 @@
 
     </div>
 
-
-
+    </div>
 </div>
 {% endblock %}
