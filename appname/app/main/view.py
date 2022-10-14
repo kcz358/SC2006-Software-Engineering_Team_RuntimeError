@@ -3,11 +3,12 @@ from flask_login import login_required, logout_user, login_user, current_user
 from ..mail import send_mail
 from . import main
 from .forms import LoginForm, RegisterForm, SearchForm
-from .. import db
+# from ..initDataFrame import combined_df
+from .. import db, combined_df
 from ..models import Userinfo
 from onemapsg import OneMapClient
 import pandas
-import requests
+import requests, json
 
 
 
@@ -97,6 +98,20 @@ def getcoordinates(address):
     else:
         pass
 
+def getRoute(source, dest):
+    api_key = 'AIzaSyDfTs7og5-oCAavy4pm_fVHBj6HkqaGLyU'
+    mode= 'driving'
+    url = "https://maps.googleapis.com/maps/api/distancematrix/json?"
+
+    payload={}
+    headers = {}
+
+    response = requests.request("GET", url+'origins=' + source +
+                     '&destinations=' + dest + '&mode=' + mode+
+                     '&key=' + api_key, headers=headers, data=payload)
+
+    print(response.text)
+    return response
 
 @main.route("/findabin", methods=['GET', 'POST'])
 # @login_required
@@ -113,6 +128,9 @@ def findBin():
         location = search_form.location.data
         has_searched = True
         lat, long = getcoordinates(location)
+        dest = str(combined_df['LATITUDE'].iloc[0]) + ',' + str(combined_df['LONGITUDE'].iloc[0])
+        print(dest)
+        # result = getRoute(str(lat)+','+str(long), )
     return render_template("findBin.html", form=search_form, has_searched=has_searched, searched=(category, location), search_results=(lat,long))
 
 @main.route("/map")
