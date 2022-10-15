@@ -81,11 +81,12 @@ def create_df(path, category):
     # print(df.to_string())
     return df
 
-df1 = create_df('dataset/secondhand.kml', "Second-hand goods")
-df2 = create_df('dataset/cash-for-trash-kml.kml', "Cash for trash")
+##INPUT FULL PATH FOR YOUR LAPTOP
+df1 = create_df(r'C:/Users/marys/OneDrive/Documents/GitHub/SC2006-Software-Engineering_Team_RuntimeError/appname/app/dataset/secondhand.kml', "Second-hand goods")
+df2 = create_df(r'C:/Users/marys/OneDrive/Documents/GitHub/SC2006-Software-Engineering_Team_RuntimeError/appname/app/dataset/cash-for-trash-kml.kml', "Cash for trash")
 
 #initialise df4 for lighting waste
-path ="dataset/lighting-waste-collection-points-kml.kml"
+path =r'C:/Users/marys/OneDrive/Documents/GitHub/SC2006-Software-Engineering_Team_RuntimeError/appname/app/dataset/lighting-waste-collection-points-kml.kml'
 
 d = {'ADDRESSPOSTALCODE': [],  # attributes, landx,landy,photourl
      'DESCRIPTION': [],
@@ -167,7 +168,7 @@ df4['LONGITUDE'] = longitude
 df4['CATEGORY'] = "Lighting Waste"
 
 #initialise df3 for e-waste
-path ="dataset/e-waste-recycling-kml.kml"
+path =r'C:/Users/marys/OneDrive/Documents/GitHub/SC2006-Software-Engineering_Team_RuntimeError/appname/app/dataset/e-waste-recycling-kml.kml'
 
 d2 = {'NAME': [],
      'ADDRESSPOSTALCODE': [],  # attributes, landx,landy,photourl
@@ -252,4 +253,4 @@ df3['CATEGORY'] = "E-Waste"
 
 frames = [df1, df2, df3, df4]
 combined_df = pd.concat(frames, ignore_index=True)
-print(combined_df.to_string())
+# print(combined_df.to_string())
