@@ -97,3 +97,31 @@ def findBin():
         location = search_form.location.data
         has_searched = True
     return render_template("findBin.html", form=search_form, has_searched= has_searched, searched=(category, location))
+
+@main.route('/articles',methods=['GET','POST'])
+# @login_required
+def articles_page():
+    articles=Article.query.all()
+    if request.method=='POST':
+        articleType=request.form['submit_button']
+        if articleType=="article1": 
+            return redirect(url_for('article_page',number=1))
+        elif articleType=="article2":
+            return redirect(url_for('article_page', number=2))
+        elif articleType=="article3":
+            return redirect(url_for('article_page', number=3))
+        elif articleType=="article4":
+            return redirect(url_for('article_page', number=4))
+        elif articleType=="article5":
+            return redirect(url_for('article_page', number=5))
+        else:
+            return redirect(url_for('article_page', number=6))
+    else:
+        return render_template('articles.html',articles=articles)
+
+@main.route('/article_<number>',methods=["POST","GET"])
+# @login_required
+def article_page(number):
+    id=int(number)-1
+    article=Article.query.all()[id]
+    return render_template('article.html',article=article)
