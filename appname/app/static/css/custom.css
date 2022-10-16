@@ -32,3 +32,16 @@
 .thumbnail-details{
     font-size: 13px
 }
+
+.article-display{
+    text-align:center;
+}
+
+.article-img{
+    width:500px;
+    height:300px;
+}
+
+.article-creators{
+    text-align:center;
+}
