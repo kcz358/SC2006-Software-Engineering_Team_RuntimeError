@@ -64,7 +64,28 @@ class Article(db.Model):
     def getBody(self):
         return self.body
 
-    
+class Feedback(db.Model):
+    __tablename__ = 'feedbacks'
+    id = db.Column(db.Integer, primary_key=True)
+    rating = db.Column(db.Integer, nullable=False)
+    review = db.Column(db.String(2000), nullable=False)
+    image_file = db.Column(db.String(2000))
+    owner_id = db.Column(db.Integer, db.ForeignKey('userinfos.id'))
+
+    def __repr__(self) -> str:
+        return "<id : {}, Rating : {}, Review : {}>".format(self.owner_id, self.rating, self.review)
+
+class Favourites(db.Model):
+    __tablename__ = 'favourites'
+    id = db.Column(db.Integer, primary_key=True)
+    location = db.Column(db.String)
+    address = db.Column(db.String(2000), nullable=False)
+    image = db.Column(db.String(20))
+    owner_id_fav = db.Column(db.Integer, db.ForeignKey('userinfos.id'))
+
+    def __repr__(self) -> str:
+        return "<id : {}, location : {}, address : {}, image: {} >".format(self.owner_id, self.location, self.address,self.image)
+  
 
 @login_manager.user_loader
 def load_user(userid):

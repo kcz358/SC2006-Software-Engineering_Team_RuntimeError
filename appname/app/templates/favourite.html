@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    
+    <title>Favourite Page</title>
+    
+    <style>
+    
+        nav{
+            background-color:#D9D9D9;
+            min-height: 50px;
+            text-align: center;
+            line-height: 50px;
+            justify-content: space-evenly;
+            margin: auto
+        }
+        nav a{
+            position: relative;
+            color: #8E9C55;
+            width: 50%;
+            font-size: 18px; text-decoration: none;
+            font-family: 'Poppins', sans-serif;
+            margin: 0 110px;
+            padding: 0 10px;
+        }
+    
+        a:hover{
+        color: #49512D;
+        }
+    
+        a::after{
+        content: "";
+        position: absolute;
+        height: 2px;
+        width: 0;
+        left: 0;
+        bottom: -10px;
+        background-color: #606A39;
+        transform-origin: bottom-right;
+        transition: 0.3s;
+        }
+    
+        a:hover::after{
+        width: 100%;
+        }
+    
+    </style>
+
+<div class="container">
+        <form method="POST" class="form-feedback" style="color: black">
+        {{ form.hidden_tag() }}
+        <div class="row text-center m-4"><h1>Favourites</h1></div>
+        <div class="col bg-light p-2">
+            {{ form.location_choice(class='form-control', placeholder="Search Favourites")}}
+        </div>
+
+        <br><br>
+
+        <nav>
+            <a href="#">E Waste</a>
+            <a href="#">2nd Hand</a>
+            <a href="#">Cash</a>
+            <a href="#">Lighting</a>
+        </nav>
+    <div>
+    
+    
+{% endblock %}

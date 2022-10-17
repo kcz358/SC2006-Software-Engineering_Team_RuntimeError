@@ -2,14 +2,16 @@ from flask import request, render_template, redirect, g, url_for, session, flash
 from flask_login import login_required, logout_user, login_user, current_user
 from ..mail import send_mail
 from . import main
-from .forms import LoginForm, RegisterForm, SearchForm
-# from ..initDataFrame import combined_df
-from .. import db, combined_df
-from ..models import Userinfo
+from .forms import LoginForm, RegisterForm, SearchForm, FeedbackForm, FavouriteForm
+from ..initDataFrame import combined_df
+from .. import db
+from .. import combined_df
+from ..models import Userinfo, Article, Feedback
 from onemapsg import OneMapClient
 import pandas
 import requests, json
-
+import os
+from app import create_app
 
 
 @main.before_request
@@ -66,8 +68,8 @@ def register():
         form_register.password.data = ''
         form_register.confirm.data = ''
         #Generate confirmation token
-        token = user.generate_confirmation_token()
-        send_mail(sender = "admin@appname",templates = 'email/confirm',to = user.email, user = user, token = token)
+        #token = user.generate_confirmation_token()
+        #send_mail(sender = "admin@appname",templates = 'email/confirm',to = user.email, user = user, token = token)
         flash("Create Account successful. A confirmation email has been sent to your email")
         return redirect(url_for("main.login", create_account = True))
     
@@ -189,3 +191,34 @@ def article_page(number):
     id=int(number)-1
     article=Article.query.all()[id]
     return render_template('article.html',article=article)
+
+def save_image(picture_file):
+    app = create_app()
+    picture_name = picture_file.filename
+    picture_path=os.path.join(app.root_path, 'static/feedbackpics', picture_name)
+    picture_file.save(picture_path)
+    return picture_name
+
+@main.route("/feedback", methods = ['GET', 'POST'])
+@login_required
+def feedback():
+    form_feedback = FeedbackForm()
+    image_file = ""
+    if form_feedback.validate_on_submit():
+        image_file = save_image(form_feedback.picture.data)
+        feedback_to_create = Feedback(rating=form_feedback.rating.data,review=form_feedback.review.data, image_file=image_file)
+        db.session.add(feedback_to_create)
+        db.session.commit()
+        flash("Feedback created successfully!")
+        return redirect(url_for('main.main_page'))
+    image_url=url_for('static', filename="feedback_pics/"+image_file)
+    return render_template("feedback.html", form=form_feedback, image_url=image_url)
+
+@main.route("/favourite", methods=['GET', 'POST'])
+@login_required
+def favourites():
+    form_favourite = FavouriteForm()
+    if request.method=="POST": 
+        flash("successful in searching u mofo")
+    return render_template("favourite.html",form=form_favourite)
+

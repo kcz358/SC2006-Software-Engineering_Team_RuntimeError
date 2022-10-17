@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, ValidationError, SelectField
+from wtforms import StringField, SubmitField, PasswordField, ValidationError, SelectField, RadioField
+from flask_wtf.file import FileField, FileAllowed
 from wtforms.validators import DataRequired, EqualTo, Email, Length, Regexp
 from ..models import Userinfo
 
@@ -30,3 +31,18 @@ class SearchForm(FlaskForm):
     location = StringField(label="Location", validators=[DataRequired()])
     mode = SelectField(label="Mode Of Transport", validators=[DataRequired()], choices=[('walking', 'walking'), ('bicycling', 'bicycling'), ('driving', 'driving'), ('transit', 'transit')])
     search = SubmitField(label="Search")
+
+class FeedbackForm(FlaskForm):
+
+    location_choice = StringField("Location", validators=[DataRequired(), Length(1,64)])
+    rating = RadioField('Rating', choices=[('1','1'),('2','2'),('3','3'),('4','4'),('5','5')],validators=[DataRequired()])
+    review = StringField("Review", validators=[DataRequired(), Length(1,64)])
+
+    picture = FileField(label="Add a picture", validators=[FileAllowed(['jpg', 'png', 'jpeg'])])
+    upload = SubmitField(label="Upload file")
+    create = SubmitField('Create Feedback')
+
+class FavouriteForm(FlaskForm):
+    location_choice = StringField("Location", validators=[DataRequired(), Length(1, 64)])
+    waste_type = RadioField('Type of Waste', choices=[('E-Waste'),('2nd-Hand'),('Cash'),('Lighting')],validators=None)
+    

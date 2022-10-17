@@ -82,6 +82,7 @@ def create_df(path, category):
     return df
 
 ##INPUT FULL PATH FOR YOUR LAPTOP
+
 df1 = create_df(r'C:/Users/marys/OneDrive/Documents/GitHub/SC2006-Software-Engineering_Team_RuntimeError/appname/app/dataset/secondhand.kml', "Second-hand goods")
 df2 = create_df(r'C:/Users/marys/OneDrive/Documents/GitHub/SC2006-Software-Engineering_Team_RuntimeError/appname/app/dataset/cash-for-trash-kml.kml', "Cash for trash")
 
@@ -253,4 +254,4 @@ df3['CATEGORY'] = "E-Waste"
 
 frames = [df1, df2, df3, df4]
 combined_df = pd.concat(frames, ignore_index=True)
-# print(combined_df.to_string())
+# print(combined_df.to_string())'''
