@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+
+{% block content %}
+
+
+    <h1 style="text-align:center">{{ article.caption }}</h1>
+    <div class="article-display">
+        <!--image display-->
+        {% if article.id==1 %}
+        <img class="article-img" src="{{url_for('static', filename='img1.jpg')}}", alt="Image cannot be displayed">
+        {% elif article.id==2 %}
+        <img class="article-img" src="{{url_for('static', filename='img2.jpg')}}", alt="Image cannot be displayed">
+        {% elif article.id==3 %}
+        <img class="article-img" src="{{url_for('static', filename='img3.jpg')}}", alt="Image cannot be displayed">
+        {% elif article.id==4 %}
+        <img class="article-img" src="{{url_for('static', filename='img4.jpg')}}", alt="Image cannot be displayed">
+        {% elif article.id==5 %}
+        <img class="article-img" src="{{url_for('static', filename='img5.jpg')}}", alt="Image cannot be displayed">
+        {% else %}
+        <img class="article-img" src="{{url_for('static', filename='img6.jpg')}}", alt="Image cannot be displayed">
+        {% endif %}
+
+    </div>
+    <div class="creators">
+        <p>Written by: {{ article.author }} |  Published on: {{ article.date }}</p>
+    </div>
+    <p>{{ article.body }}</p>
+
+{% endblock%}

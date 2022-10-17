@@ -19,7 +19,7 @@ def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = "secret keys"
     #Set your own sql server url based on the user you create and the database you use
-    app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://mary:password@localhost/db"
+    #app.config['SQLALCHEMY_DATABASE_URI'] = ""
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     #Setup Your own smtp mail server here
     #app.config['MAIL_SERVER']=''

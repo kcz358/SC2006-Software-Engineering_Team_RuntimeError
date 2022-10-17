@@ -66,8 +66,8 @@ def register():
         form_register.password.data = ''
         form_register.confirm.data = ''
         #Generate confirmation token
-        # token = user.generate_confirmation_token()
-        # send_mail(sender = "admin@appname",templates = 'email/confirm',to = user.email, user = user, token = token)
+        token = user.generate_confirmation_token()
+        send_mail(sender = "admin@appname",templates = 'email/confirm',to = user.email, user = user, token = token)
         flash("Create Account successful. A confirmation email has been sent to your email")
         return redirect(url_for("main.login", create_account = True))
     
@@ -160,3 +160,32 @@ def findBin():
 def viewMap():
 
     return render_template("mapView.html")
+
+
+@main.route('/articles',methods=['GET','POST'])
+# @login_required
+def articles_page():
+    articles=Article.query.all()
+    if request.method=='POST':
+        articleType=request.form['submit_button']
+        if articleType=="article1": 
+            return redirect(url_for('article_page',number=1))
+        elif articleType=="article2":
+            return redirect(url_for('article_page', number=2))
+        elif articleType=="article3":
+            return redirect(url_for('article_page', number=3))
+        elif articleType=="article4":
+            return redirect(url_for('article_page', number=4))
+        elif articleType=="article5":
+            return redirect(url_for('article_page', number=5))
+        else:
+            return redirect(url_for('article_page', number=6))
+    else:
+        return render_template('articles.html',articles=articles)
+
+@main.route('/article_<number>',methods=["POST","GET"])
+# @login_required
+def article_page(number):
+    id=int(number)-1
+    article=Article.query.all()[id]
+    return render_template('article.html',article=article)
