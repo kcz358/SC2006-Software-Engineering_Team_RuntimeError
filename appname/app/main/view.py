@@ -3,8 +3,14 @@ from flask_login import login_required, logout_user, login_user, current_user
 from ..mail import send_mail
 from . import main
 from .forms import LoginForm, RegisterForm, SearchForm
-from .. import db
+# from ..initDataFrame import combined_df
+from .. import db, combined_df
 from ..models import Userinfo
+from onemapsg import OneMapClient
+import pandas
+import requests, json
+
+
 
 @main.before_request
 def before_request():
@@ -84,6 +90,51 @@ def confirm(token):
 def account():
     return render_template("account.html")
 
+def getcoordinates(address):
+    req = requests.get('https://developers.onemap.sg/commonapi/search?searchVal='+address+'&returnGeom=Y&getAddrDetails=Y&pageNum=1')
+    resultsdict = eval(req.text)
+    if len(resultsdict['results'])>0:
+        return resultsdict['results'][0]['LATITUDE'], resultsdict['results'][0]['LONGITUDE']
+    else:
+        pass
+
+def getRoute(source, dest, mode):
+    print("getting route")
+    api_key = 'AIzaSyDfTs7og5-oCAavy4pm_fVHBj6HkqaGLyU'
+    url = "https://maps.googleapis.com/maps/api/distancematrix/json?"
+
+    payload={}
+    headers = {}
+
+    response = requests.request("GET", url+'origins=' + source +
+                     '&destinations=' + dest + '&mode=' + mode+
+                     '&key=' + api_key, headers=headers, data=payload)
+    result = eval(response.text)
+    print(response.text)
+    return result
+
+def getNearestBin(source, category, mode):
+    arrResults = []
+    for i in range(len(combined_df)):
+        if combined_df['CATEGORY'].iloc[i] == category:
+            dest = str(combined_df['LATITUDE'].iloc[i]) + ',' + str(combined_df['LONGITUDE'].iloc[i])
+            result = getRoute(source,dest, mode)
+            time = result['rows'][0]['elements'][0]['duration']["value"] # in seconds
+            arrResults.append((round(time/60),i)) #convert time to minutes
+            arrResults.sort()
+        i += 1
+    formatted_results = []
+    temp = []
+    for j in range(len(arrResults)):
+        temp.append(arrResults[j])
+        if j%3 ==0:
+            formatted_results.append(temp)
+            temp=[]
+
+    if len(temp) !=0:
+        formatted_results.append(temp)
+    return formatted_results
+
 @main.route("/findabin", methods=['GET', 'POST'])
 # @login_required
 def findBin():
@@ -92,11 +143,24 @@ def findBin():
     locations_found = False
     category = None
     location = None
+    lat = None
+    long = None
+    binsArr=None
     if request.method == 'POST' and search_form.validate():
         category = search_form.category.data
         location = search_form.location.data
+        mode = search_form.mode.data
         has_searched = True
-    return render_template("findBin.html", form=search_form, has_searched= has_searched, searched=(category, location))
+        lat, long = getcoordinates(location)
+        source = str(lat)+','+str(long)
+        binsArr = getNearestBin(source, category, mode)
+    return render_template("findBin.html", form=search_form, has_searched=has_searched, searched=(category, location), search_results=binsArr, data=combined_df)
+
+@main.route("/map")
+def viewMap():
+
+    return render_template("mapView.html")
+
 
 @main.route('/articles',methods=['GET','POST'])
 # @login_required

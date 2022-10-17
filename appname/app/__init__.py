@@ -8,6 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous.serializer import Serializer
 import os
+from .initDataFrame import combined_df
 
 mail = Mail()
 db = SQLAlchemy()
@@ -33,3 +34,5 @@ def create_app():
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
     return app
+
+

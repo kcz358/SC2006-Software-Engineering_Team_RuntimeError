@@ -58,6 +58,20 @@
           </div>
 
         </div>
+        <div class="row">
+          <div class="col align-self-center" align="center">
+            <div class="input-group mb-3 w-50">
+              <div class="input-group-prepend">
+                <div class="prepend" style="padding:5px 10px 5px 0px">
+                  {{form.mode.label}}
+                </div>
+              </div>
+<!--              <input type="text" class="form-control" aria-label="Location" aria-describedby="basic-addon1">-->
+                  {{ form.mode}}
+            </div>
+          </div>
+
+        </div>
         <div class="m-4 text-center">
           {{form.search(class="btn", style="background-color: #606A39; border:0cm;")}}
         </div>
@@ -66,73 +80,37 @@
       {% if has_searched==True %}
         <p>Showing bins for {{searched[0]}} near {{searched[1]}}</p>
         <br>
-        <div>
-          <div class="row justify-content-evenly" style="padding-bottom:15px">
+          {% for list in search_results %}
+              <div class="row justify-content-evenly" style="padding-bottom:15px">
+            {% for item in list %}
             <div class="col-3 justify-content-center align-self-center border border-dark rounded location-thumbnail" style="padding-bottom:10px">
               <div class="thumbnail">
                 <img src="/static/images/E-waste millenia walk.png" alt="..." height="180" class="rounded">
                 <div align="center" style="padding:10px">
-                  <p> Location Title</p>
+                  {% if data.iloc[item[1]]['ADDRESSBUILDINGNAME']!=None %}
+                  <p> {{data.iloc[item[1]]['ADDRESSBUILDINGNAME']}}</p>
+                  {% endif %}
+                  {% if data.iloc[item[1]]['ADDRESSSTREETNAME']!= None %}
+                  <p> {{data.iloc[item[1]]['ADDRESSSTREETNAME']}}</p>
+                  {% endif %}
+                  <p> {{data.iloc[item[1]]['NAME']}}</p>
                 </div>
                 <div class="row justify-content-between">
                   <div align="left" class="col-2 thumbnail-details">
-                    <p>category</p>
+                    <p>{{data.iloc[item[1]]['CATEGORY']}}</p>
                   </div>
                   <div align="right" class="col-3 thumbnail-details">
-                    <p>distance</p>
+                    <p>{{item[0]}} min</p>
                   </div>
                 </div>
-
-
-              </div>
-
-
-            </div>
-
-            <div class="col-3 justify-content-center align-self-center border border-dark rounded location-thumbnail" style="padding-bottom:10px">
-              <div class="thumbnail">
-                <img src="/static/images/E-waste millenia walk.png" alt="..." height="180" class="rounded">
-                <div align="center" style="padding:10px">
-                  <p> Location Title</p>
-                </div>
-                <div class="row justify-content-between">
-                  <div align="left" class="col-2 thumbnail-details">
-                    <p>category</p>
-                  </div>
-                  <div align="right" class="col-3 thumbnail-details">
-                    <p>distance</p>
-                  </div>
-                </div>
-
-
               </div>
             </div>
-
-            <div class="col-3 justify-content-center align-self-center border border-dark rounded location-thumbnail" style="padding-bottom:10px">
-              <div class="thumbnail">
-                <img src="/static/images/E-waste millenia walk.png" alt="..." height="180" class="rounded">
-                <div align="center" style="padding:10px">
-                  <p> Location Title</p>
-                </div>
-                <div class="row justify-content-between">
-                  <div align="left" class="col-2 thumbnail-details">
-                    <p>category</p>
-                  </div>
-                  <div align="right" class="col-3 thumbnail-details">
-                    <p>distance</p>
-                  </div>
-                </div>
-
-
-              </div>
-
+          {% endfor %}
           </div>
-        </div>
-      {% endif %}
+        {% endfor %}
+
+    {% endif %}
 
     </div>
-
-
-
 </div>
 {% endblock %}

@@ -26,6 +26,7 @@ class RegisterForm(FlaskForm):
             raise ValidationError("Username already exists")
 
 class SearchForm(FlaskForm):
-    category = SelectField(label="Category", validators=[DataRequired()], choices=[('eWaste', 'E-Waste'), ('clothing', 'Clothing'), ('plasticBottle', 'Plastic Bottle')])
+    category = SelectField(label="Category", validators=[DataRequired()], choices=[('E-Waste', 'E-Waste'), ('Second-hand goods', 'Second-hand goods'), ('Cash for trash', 'Cash for trash'),('Lighting Waste', 'Lighting Waste')])
     location = StringField(label="Location", validators=[DataRequired()])
+    mode = SelectField(label="Mode Of Transport", validators=[DataRequired()], choices=[('walking', 'walking'), ('bicycling', 'bicycling'), ('driving', 'driving'), ('transit', 'transit')])
     search = SubmitField(label="Search")

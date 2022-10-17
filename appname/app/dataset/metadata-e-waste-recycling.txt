@@ -1,0 +1,36 @@
+# Metadata for E-waste Recycling
+---
+Identifier: 'fcc50758-b469-4980-a0b1-00321da6aa09'
+Name: 'e-waste-recycling'
+Title: 'E-waste Recycling'
+Description: 'E-waste recycling near you.'
+Topics:
+  - 'Environment'
+Keywords:
+  - 'e waste'
+  - 'onemap'
+  - 'themes'
+Publisher:
+  Name: 'National Environment Agency'
+  Admin 1:
+    Name: 'Wee Ian Bing'
+    Department: 'NATIONAL ENVIRONMENT AGENCY'
+    Email: 'WEE_Ian_Bing@nea.gov.sg'
+Sources:
+  - 'National Environment Agency'
+License: 'https://data.gov.sg/open-data-licence'
+Frequency: 'Annual'
+Last Updated: '2021-10-02T00:02:34.787548'
+Resources:
+  -
+    Identifier: '95b95773-8c29-4a32-a9e1-461e622bf092'
+    Title: 'E-waste Recycling (KML)'
+    Url: 'https://geo.data.gov.sg/ewaste/2021/09/24/kml/ewaste.kml'
+    Format: 'KML'
+    Last Updated: '2021-09-23T16:00:00'
+  -
+    Identifier: '4290c3d5-d1fc-433c-b498-c43a120f7ea0'
+    Title: 'E-waste Recycling (GEOJSON)'
+    Url: 'https://geo.data.gov.sg/ewaste/2021/09/24/geojson/ewaste.geojson'
+    Format: 'GeoJSON'
+    Last Updated: '2021-09-23T16:00:00'
