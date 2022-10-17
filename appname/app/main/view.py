@@ -60,8 +60,8 @@ def register():
         form_register.password.data = ''
         form_register.confirm.data = ''
         #Generate confirmation token
-        #token = user.generate_confirmation_token()
-        #send_mail(sender = "admin@appname",templates = 'email/confirm',to = user.email, user = user, token = token)
+        token = user.generate_confirmation_token()
+        send_mail(sender = "admin@appname",templates = 'email/confirm',to = user.email, user = user, token = token)
         flash("Create Account successful. A confirmation email has been sent to your email")
         return redirect(url_for("main.login", create_account = True))
     
