@@ -1,4 +1,4 @@
-from flask import request, render_template, redirect, g, url_for, session, flash
+from flask import request, render_template, redirect, g, url_for, session, flash, get_template_attribute
 from flask_login import login_required, logout_user, login_user, current_user
 from ..mail import send_mail
 from . import main
@@ -6,11 +6,15 @@ from .forms import LoginForm, RegisterForm, SearchForm, FeedbackForm, FavouriteF
 from ..initDataFrame import combined_df
 from .. import db
 from .. import combined_df
-from ..models import Userinfo, Article, Feedback
+from ..models import Userinfo, Article, Feedback, ResNet, input_transform
 from onemapsg import OneMapClient
 import pandas
 import requests, json
 import os
+import torch
+import numpy as np
+import io
+from PIL import Image
 from app import create_app
 
 
@@ -157,6 +161,31 @@ def findBin():
         source = str(lat)+','+str(long)
         binsArr = getNearestBin(source, category, mode)
     return render_template("findBin.html", form=search_form, has_searched=has_searched, searched=(category, location), search_results=binsArr, data=combined_df)
+
+#dummy dictionary
+labels = {0:"E-waste", 1:"2nd-hand", 2:"lightning waste", 3:"cash for trash"}
+
+@main.route("/inference_sync", methods = ['GET', 'POST'])
+def inference_sync():
+    model = ResNet(4)
+    checkpoints = torch.load("/Users/paulzhang/Downloads/SC2006-Software-Engineering_Team_RuntimeError-main/appname/app/resources/epoch_5", map_location='cpu')
+    model.load_state_dict(checkpoints['model_state_dict'])
+    model.eval()
+    if request.method == 'POST' and 'formFile' in request.files:
+        
+        print("post successful")
+        photo = request.files['formFile']
+        print("get file")
+        in_memory_file = io.BytesIO()
+        photo.save(in_memory_file)
+        img = Image.open(in_memory_file)
+        img = input_transform(img)
+        output = model(img.unsqueeze(0)).reshape(-1)
+        output_label = np.argmax(output.detach().numpy())
+        generate_text = get_template_attribute("_generate_text.html", "generate_text")
+        html = generate_text(labels.get(output_label))
+        return html
+    return "<p> No result </p>"
 
 @main.route("/map")
 def viewMap():
