@@ -3,6 +3,8 @@ from . import db, login_manager
 from flask import current_app
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous.serializer import Serializer
+from torchvision import models, transforms
+import torch.nn as nn
 
 class Userinfo(UserMixin, db.Model):
     __tablename__ = 'userinfos'
@@ -86,7 +88,17 @@ class Favourites(db.Model):
     def __repr__(self) -> str:
         return "<id : {}, location : {}, address : {}, image: {} >".format(self.owner_id, self.location, self.address,self.image)
   
-
+class ResNet(nn.Module):
+    def __init__(self, out_features):
+        super(ResNet, self).__init__()
+        self.res = models.resnet50(weights='ResNet50_Weights.IMAGENET1K_V1')
+        self.res.fc = nn.Linear(self.res.fc.in_features, out_features)
+        self.softmax = nn.Softmax(dim = 1)
+    def forward(self, x):
+        output = self.res(x)
+        return self.softmax(output)
+    
+    
 @login_manager.user_loader
 def load_user(userid):
     return Userinfo.query.get(int(userid))
