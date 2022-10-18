@@ -156,6 +156,11 @@ def findBin():
         binsArr = getNearestBin(source, category, mode)
     return render_template("findBin.html", form=search_form, has_searched=has_searched, searched=(category, location), search_results=binsArr, data=combined_df)
 
+@main.route("/findabin/thisbin", methods = ['GET', 'POST'])
+def thisBinPage():
+    my_var = request.args.get('my_var', None)
+    return render_template('thisBin.html', my_var = int(my_var), data = combined_df)
+
 @main.route("/map")
 def viewMap():
 

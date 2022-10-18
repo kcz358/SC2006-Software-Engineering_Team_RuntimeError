@@ -82,11 +82,11 @@ def create_df(path, category):
     return df
 
 ##INPUT FULL PATH FOR YOUR LAPTOP
-df1 = create_df(r'C:/Users/marys/OneDrive/Documents/GitHub/SC2006-Software-Engineering_Team_RuntimeError/appname/app/dataset/secondhand.kml', "Second-hand goods")
-df2 = create_df(r'C:/Users/marys/OneDrive/Documents/GitHub/SC2006-Software-Engineering_Team_RuntimeError/appname/app/dataset/cash-for-trash-kml.kml', "Cash for trash")
+df1 = create_df(r'/Users/meredydd/Desktop/SWEProject/appname/app/dataset/secondhand.kml', "Second-hand goods")
+df2 = create_df(r'/Users/meredydd/Desktop/SWEProject/appname/app/dataset/cash-for-trash-kml.kml', "Cash for trash")
 
 #initialise df4 for lighting waste
-path =r'C:/Users/marys/OneDrive/Documents/GitHub/SC2006-Software-Engineering_Team_RuntimeError/appname/app/dataset/lighting-waste-collection-points-kml.kml'
+path =r'/Users/meredydd/Desktop/SWEProject/appname/app/dataset/lighting-waste-collection-points-kml.kml'
 
 d = {'ADDRESSPOSTALCODE': [],  # attributes, landx,landy,photourl
      'DESCRIPTION': [],
@@ -168,7 +168,7 @@ df4['LONGITUDE'] = longitude
 df4['CATEGORY'] = "Lighting Waste"
 
 #initialise df3 for e-waste
-path =r'C:/Users/marys/OneDrive/Documents/GitHub/SC2006-Software-Engineering_Team_RuntimeError/appname/app/dataset/e-waste-recycling-kml.kml'
+path =r'/Users/meredydd/Desktop/SWEProject/appname/app/dataset/e-waste-recycling-kml.kml'
 
 d2 = {'NAME': [],
      'ADDRESSPOSTALCODE': [],  # attributes, landx,landy,photourl
