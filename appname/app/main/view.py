@@ -168,7 +168,8 @@ labels = {0:"E-waste", 1:"2nd-hand", 2:"lightning waste", 3:"cash for trash"}
 @main.route("/inference_sync", methods = ['GET', 'POST'])
 def inference_sync():
     model = ResNet(4)
-    checkpoints = torch.load("/Users/paulzhang/Downloads/SC2006-Software-Engineering_Team_RuntimeError-main/appname/app/resources/epoch_5", map_location='cpu')
+    #Fill the checkpoints path according to your path where you put the model checkpoints
+    checkpoints = torch.load("resources/epoch_5", map_location='cpu')
     model.load_state_dict(checkpoints['model_state_dict'])
     model.eval()
     if request.method == 'POST' and 'formFile' in request.files:
