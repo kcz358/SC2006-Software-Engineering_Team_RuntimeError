@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<style>
+img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.button {
+  background-color: #686c3c; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+</style>
+
+<div class = "container">
+    <div class="justify-content-center align-self-center" style="padding-bottom:10px">
+    <img src = "/static/images/E-waste millenia walk.png" alt="..." height="180" style="width:45%; height:70%;">  
+    <div align="center" style="padding:10px">
+    {% if data.iloc[my_var]['ADDRESSBUILDINGNAME']!=None %}
+    <h1> {{data.iloc[my_var]['ADDRESSBUILDINGNAME']}}</h1>
+    {% endif %}
+    {% if data.iloc[my_var]['ADDRESSSTREETNAME']!= None %}
+    <h2> {{data.iloc[my_var]['ADDRESSSTREETNAME']}}</h2>
+    {% endif %}
+    <h3> {{data.iloc[my_var]['NAME']}}</h3>
+    </div>    
+</div>
+
+<div class = "row"><br><br><br></div>
+
+<div class = 'row'>
+    <div class="col-sm-4 text-center">
+        <button type = "button" class = "button"> Add to Favourites </button>
+    </div> 
+    <div class = "col-sm-4"><br><br></div>
+    <div class = "col-sm-4 text-center">
+        <a href = http://maps.google.com/maps?z=12&t=m&q=loc:{{data['LATITUDE'].iloc[my_var]}}+{{data['LONGITUDE'].iloc[my_var]}}>
+        <button type = "button" class = "button"> Google Maps </button>
+        </a>
+    </div>
+</div>
+
+{% endblock %}

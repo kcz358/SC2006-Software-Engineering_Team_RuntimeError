@@ -188,6 +188,12 @@ def inference_sync():
         return html
     return "<p> No result </p>"
 
+@main.route("/findabin/thisbin", methods = ['GET', 'POST'])
+def thisBinPage():
+    my_var = request.args.get('my_var', None)
+    return render_template('thisBin.html', my_var = int(my_var), data = combined_df)
+
+
 @main.route("/map")
 def viewMap():
 

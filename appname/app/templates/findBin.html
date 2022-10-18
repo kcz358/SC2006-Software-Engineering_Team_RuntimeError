@@ -86,7 +86,9 @@
             {% for item in list %}
             <div class="col-3 justify-content-center align-self-center border border-dark rounded location-thumbnail" style="padding-bottom:10px">
               <div class="thumbnail">
-                <img src="/static/images/E-waste millenia walk.png" alt="..." height="180" class="rounded">
+                <a href = "{{url_for('main.thisBinPage', my_var = item[1])}}">
+                <button type = "img" alt = "..." height = "180" class = "rounded"> <img img src = "/static/images/E-waste millenia walk.png" alt="..." height="180" class="rounded"> </button>
+                </a>
                 <div align="center" style="padding:10px">
                   {% if data.iloc[item[1]]['ADDRESSBUILDINGNAME']!=None %}
                   <p> {{data.iloc[item[1]]['ADDRESSBUILDINGNAME']}}</p>
