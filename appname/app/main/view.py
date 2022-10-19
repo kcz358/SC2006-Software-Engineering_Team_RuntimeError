@@ -72,6 +72,7 @@ def register():
         form_register.password.data = ''
         form_register.confirm.data = ''
         #Generate confirmation token
+        #Uncomment this if you set up your mail server
         #token = user.generate_confirmation_token()
         #send_mail(sender = "admin@appname",templates = 'email/confirm',to = user.email, user = user, token = token)
         flash("Create Account successful. A confirmation email has been sent to your email")
