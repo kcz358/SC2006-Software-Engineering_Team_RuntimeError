@@ -98,7 +98,12 @@ class ResNet(nn.Module):
         output = self.res(x)
         return self.softmax(output)
     
-    
+input_transform = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Resize((224,224)),
+    #transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
+])
+
 @login_manager.user_loader
 def load_user(userid):
     return Userinfo.query.get(int(userid))
