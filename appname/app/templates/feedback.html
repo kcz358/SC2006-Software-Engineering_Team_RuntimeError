@@ -2,6 +2,7 @@
 
 {% block content %}
 <title>Create Feedback</title>
+
 <style>
     .div-1 {
         background-color: #dad7cd;
@@ -20,12 +21,12 @@
         </div>
         <br>
         <div class="col-12 m-4">
-            <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
                 </head>
                 <body>
                     <div class="row">
                     <div class="form-group col-xs-6">
                         <label for="all_classes"><h4>Select a waste category:</h4></label>
+                        <br><br>
                         <select class="form-control" style="color: black; background: white;" id="all_classes">
                         {% for o in all_classes %}
                                 <option value="{{ o }}">{{ o }}</option>
@@ -33,7 +34,9 @@
                         </select>
                     </div>
                     <div class="form-group col-xs-6">
+                        <br><br>
                         <label for="all_entries"><h4>Select an address:</h4></label>
+                        <br><br>
                         <select class="form-control" style="color:black; background:white;" id="all_entries">
                         {% for o in all_entries %}
                                 <option value="{{ o }}">{{ o }}</option>
@@ -41,7 +44,7 @@
                         </select>
                     </div>
                     </div>
-            
+                    <br>
                     <div>
                     <button type="button" class="btn" style="color:white; background:#686c3c;" id="process_input">Select location</button>
                     </div><br>
@@ -77,6 +80,7 @@
         </div>
         <div class="col-12 m-4">
             <h4>Rating:</h4>
+            <br>
             <div class="col bg-light p-2">
                 {% for choice in form.rating %}
             
@@ -90,6 +94,7 @@
     <br>
     <div class="col-12 m-4">
         <h4>Review:</h4>
+        <br>
         <div class="col bg-light p-2">
             {{ form.review(class='form-control', placeholder="Please enter text...") }}
         </div>
@@ -106,7 +111,7 @@
 
         {% endif %}
     </div>
-    <br>
+    <br><br>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ form.create(class="btn btn-lg btn-block div-1") }}
 
 </div>
