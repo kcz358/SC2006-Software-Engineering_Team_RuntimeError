@@ -1,0 +1,77 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<title>Feedback</title>
+<div class="container">
+    <div class="row text-center m-4"><h1>Feedback</h1></div>
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="row">
+          <div class="form-group">
+            <label for="all_classes"><h3>Select a waste category:</h3></label>
+            <select class="form-control" style="color: black; background: white; height: 50px; font-size: 17px;" id="all_classes">
+              {% for o in all_classes %}
+                      <option value="{{ o }}">{{ o }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <br>
+          <div class="form-group">
+            <label for="all_entries"><h3>Select a location:</h3></label>
+            <select class="form-control" style="color:black; background: white; height: 50px; font-size: 17px;" id="all_entries">
+              {% for o in all_entries %}
+                      <option value="{{ o }}">{{ o }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div>
+          <button type="button" class="btn" style="color:white; background:grey;" id="process_input">Search</button>
+          <a href="{{url_for('main.showFeedback')}}">          
+            <button type="button" class="btn" style="color:white; background:grey;">Display</button>
+          </a>
+
+        </div><br><br>
+
+      </div>
+      <script src="https://code.jquery.com/jquery-1.12.4.js" type="text/javascript"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+      <script type="text/javascript">
+        $(document).ready(function() {
+  
+          $('#all_classes').change(function(){
+  
+            $.getJSON('/_update_dropdown', {
+              selected_class: $('#all_classes').val()
+  
+            }).success(function(data) {
+                  $('#all_entries').html(data.html_string_selected);
+             })
+          });
+          $('#process_input').bind('click', function() {
+  
+              $.getJSON('/_process_data', {
+                  selected_class: $('#all_classes').val(),
+                  selected_entry: $('#all_entries').val(),
+  
+  
+              }).success(function(data) {
+                  $('#processed_results').text(data.random_text);
+              })
+            return false;
+  
+          });
+        });
+      </script>
+      <form method="POST" class="form-createFeedback" style="color:black">
+        {{ form.hidden_tag() }}
+        <div class="m-4 text-center">
+        <h3>Want to create feedback of your own? <br></h3>
+        {{ form.add(class="btn btn-lg", style="background-color: #dad7cd") }}
+        </div>
+    </form>
+</div>
+{% endblock %}
+
