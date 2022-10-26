@@ -2,17 +2,16 @@ from flask import request, render_template, redirect, g, url_for, session, flash
 from flask_login import login_required, logout_user, login_user, current_user
 from ..mail import send_mail
 from . import main
-from .forms import LoginForm, RegisterForm, SearchForm, FeedbackForm, FavouriteForm, CreateFeedbackForm
+from .forms import LoginForm, RegisterForm, SearchForm, FeedbackForm, FavouriteForm, CreateFeedbackForm, AddFavourites
 from ..initDataFrame import combined_df
 from .. import db
 from .. import combined_df
-from ..models import Userinfo, Article, Feedback
-# from ..models import ResNet, input_transform
-#from onemapsg import OneMapClient
+from ..models import Userinfo, Article, Feedback, Favourites, ResNet, input_transform
+from onemapsg import OneMapClient
 import pandas
 import requests, json
 import os
-#import torch
+import torch
 import numpy as np
 import io
 from PIL import Image
@@ -194,7 +193,19 @@ def inference_sync():
 @main.route("/findabin/thisbin", methods = ['GET', 'POST'])
 def thisBinPage():
     my_var = request.args.get('my_var', None)
-    return render_template('thisBin.html', my_var = int(my_var), data = combined_df)
+    print(my_var)
+    form_favourite = AddFavourites()
+    if form_favourite.validate_on_submit():
+        if not current_user.is_authenticated:
+            flash("Login Required!")
+            return redirect(url_for('main.login'))
+        favourites_to_add = Favourites(category=combined_df.iloc[int(my_var)]['CATEGORY'],location_name=combined_df.iloc[int(my_var)]['NAME'],
+                                       location_postal=combined_df.iloc[int(my_var)]['ADDRESSPOSTALCODE'],location_streetname=combined_df.iloc[int(my_var)]['ADDRESSSTREETNAME'],
+                                       user_email=current_user.email)
+        db.session.add(favourites_to_add)
+        db.session.commit()
+        flash("Favourites Added!")
+    return render_template('thisBin.html', my_var = int(my_var), data = combined_df,form=form_favourite)
 
 
 @main.route("/map")
@@ -268,6 +279,7 @@ def update_dropdown():
 
 global selected_entry 
 global selected_class
+
 @main.route('/_process_data')
 def process_data():
     global selected_class
@@ -295,7 +307,7 @@ def displayFeedback():
 @login_required
 def showFeedback():
     feedback = []
-    temp_db = sqlite3.connect("/Users/tanleying/SC2006-Software-Engineering_Team_RuntimeError/appname/app/app.db")
+    temp_db = sqlite3.connect("/Users/matchajam/PycharmProjects/sc2006ultra/appname/app/app.db")
 
     temp_db.row_factory = sqlite3.Row
     values = temp_db.execute("SELECT * FROM feedbacks WHERE location LIKE '%s'" % selected_entry).fetchall()
@@ -327,10 +339,44 @@ def createFeedback():
     image_url=url_for('static', filename="feedback_pics/"+image_file)
     return render_template("feedback.html", form=form_feedback, image_url=image_url, all_classes=default_classes, all_entries=default_values)
 
-@main.route("/favourite", methods=['GET', 'POST'])
+@main.route("/favourite/eWaste", methods=['GET', 'POST'])
 @login_required
-def favourites():
+def favourites_ewaste():
+    print(combined_df)
     form_favourite = FavouriteForm()
-    if request.method=="POST": 
-        flash("successful in searching u mofo")
-    return render_template("favourite.html",form=form_favourite)
+    #Check the exact string in combined_df!!
+    ewaste_dict = changeSQL_to_dict('E-Waste')
+    #Pass in favourites db as data over here instead of combined df
+    return render_template("ewasteFavourites.html",data=ewaste_dict)
+
+@main.route("/favourite/secondHand", methods=['GET', 'POST'])
+@login_required
+def favourite_secondHand():
+    secondhand_dict = changeSQL_to_dict('Second-hand goods')
+    return render_template("secondHandFavourites.html",data=secondhand_dict)
+
+@main.route("/favourite/cash", methods=['GET', 'POST'])
+@login_required
+def favourite_cash():
+    cash_dict = changeSQL_to_dict('Cash for Trash')
+    return render_template("cashFavourites.html",data=cash_dict)
+
+@main.route("/favourite/lighting", methods=['GET', 'POST'])
+@login_required
+def favourite_lighting():
+    lighting_dict = changeSQL_to_dict('Lighting Waste')
+    return render_template("lightingFavourites.html",data=lighting_dict)
+
+#So that all the favourites pages can use!
+def changeSQL_to_dict(waste_type):
+    filtered_list = []
+    temp_db = sqlite3.connect("/Users/matchajam/PycharmProjects/sc2006ultra/appname/app/app.db")
+    temp_db.row_factory = sqlite3.Row
+    #Change this to user and location and category
+    values = temp_db.execute("SELECT * FROM favourites WHERE category LIKE '%s'" % waste_type).fetchall()
+    for item in values:
+        filtered_list.append({k: item[k] for k in item.keys()})
+    temp_db.close()
+    return filtered_list
+
+

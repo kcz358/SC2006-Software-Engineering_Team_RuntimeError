@@ -83,12 +83,12 @@ def create_df(path, category):
 
 ##INPUT FULL PATH FOR YOUR LAPTOP
 
-df1 =  create_df(r'/Users/tanleying/SC2006-Software-Engineering_Team_RuntimeError/appname/app/dataset/secondhand.kml', "Second-hand goods")
-df2 = create_df(r'/Users/tanleying/SC2006-Software-Engineering_Team_RuntimeError/appname/app/dataset/cash-for-trash-kml.kml', "Cash for trash")
+df1 = create_df(r'/Users/matchajam/PycharmProjects/sc2006ultra/appname/app/dataset/secondhand.kml', "Second-hand goods")
+df2 = create_df(r'/Users/matchajam/PycharmProjects/sc2006ultra/dataset/cash-for-trash-kml.kml', "Cash for trash")
 
 
 #initialise df4 for lighting waste
-path =r'/Users/tanleying/SC2006-Software-Engineering_Team_RuntimeError/appname/app/dataset/lighting-waste-collection-points-kml.kml'
+path =r'/Users/matchajam/PycharmProjects/sc2006ultra/dataset/lighting-waste-collection-points-kml.kml'
 
 d = {'ADDRESSPOSTALCODE': [],  # attributes, landx,landy,photourl
      'DESCRIPTION': [],
@@ -170,7 +170,7 @@ df4['LONGITUDE'] = longitude
 df4['CATEGORY'] = "Lighting Waste"
 
 #initialise df3 for e-waste
-path =r'/Users/tanleying/SC2006-Software-Engineering_Team_RuntimeError/appname/app/dataset/e-waste-recycling-kml.kml'
+path =r'/Users/matchajam/PycharmProjects/sc2006ultra/dataset/e-waste-recycling-kml.kml'
 
 d2 = {'NAME': [],
      'ADDRESSPOSTALCODE': [],  # attributes, landx,landy,photourl
@@ -255,4 +255,7 @@ df3['CATEGORY'] = "E-Waste"
 
 frames = [df1, df2, df3, df4]
 combined_df = pd.concat(frames, ignore_index=True)
-print(combined_df.to_string())
+
+for i in range(0, 518):
+    if combined_df.iloc[i]['CATEGORY'] == "Lighting Waste":
+        print(combined_df.iloc[i])

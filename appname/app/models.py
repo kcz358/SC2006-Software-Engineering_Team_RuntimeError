@@ -3,8 +3,8 @@ from . import db, login_manager
 from flask import current_app
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous.serializer import Serializer
-#from torchvision import models, transforms
-#import torch.nn as nn
+from torchvision import models, transforms
+import torch.nn as nn
 
 class Userinfo(UserMixin, db.Model):
     __tablename__ = 'userinfos'
@@ -77,19 +77,20 @@ class Feedback(db.Model):
     def __repr__(self) -> str:
         return "<Rating : {}, Review : {}>".format(self.rating, self.review)
 
-
 class Favourites(db.Model):
     __tablename__ = 'favourites'
     id = db.Column(db.Integer, primary_key=True)
-    location = db.Column(db.String)
-    address = db.Column(db.String(2000), nullable=False)
-    image = db.Column(db.String(20))
-    owner_id_fav = db.Column(db.Integer, db.ForeignKey('userinfos.id'))
+    category = db.Column(db.String(2000))
+    location_name = db.Column(db.String)
+    location_postal = db.Column(db.String(2000))
+    location_streetname = db.Column(db.String(2000))
+    user_email = db.Column(db.String(2000))
 
     def __repr__(self) -> str:
-        return "<id : {}, location : {}, address : {}, image: {} >".format(self.owner_id, self.location, self.address,self.image)
-  
-'''class ResNet(nn.Module):
+        return "<id : {}, location : {}, address : {}, image: {} >".format(self.owner_id, self.location, self.address,
+                                                                           self.image)
+
+class ResNet(nn.Module):
     def __init__(self, out_features):
         super(ResNet, self).__init__()
         self.res = models.resnet50(weights='ResNet50_Weights.IMAGENET1K_V1')
@@ -103,7 +104,7 @@ input_transform = transforms.Compose([
     transforms.ToTensor(),
     transforms.Resize((224,224)),
     #transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
-])'''
+])
 
 @login_manager.user_loader
 def load_user(userid):

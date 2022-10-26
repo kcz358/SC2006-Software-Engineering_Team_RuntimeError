@@ -47,3 +47,5 @@ class FavouriteForm(FlaskForm):
     location_choice = StringField("Location", validators=[DataRequired(), Length(1, 64)])
     waste_type = RadioField('Type of Waste', choices=[('E-Waste'),('2nd-Hand'),('Cash'),('Lighting')],validators=None)
     
+class AddFavourites(FlaskForm):
+    addFav = SubmitField('Add Favourites')
