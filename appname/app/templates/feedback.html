@@ -1,57 +1,113 @@
 {% extends "layout.html" %}
 
 {% block content %}
-
-<title>Feedback Page</title>
+<title>Create Feedback</title>
+<style>
+    .div-1 {
+        background-color: #dad7cd;
+    }
+</style>
 
 
 <div class="container">
     <form id="form1" method="POST" class="form-feedback" style="color: black" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
 
-        <div class="row text-center m-4"><h1>Feedback</h1></div>
-
-        <br>
-
-        <div class="col-12 m-4">
-            <h4>Location</h4>
-            <div class="col bg-light p-2">
-                {{ form.location_choice(class='form-control', placeholder="Search") }}
-            </div>
+        <div class="row text-center m-4 p-3 mb-2 div-1 text-dark">
+            <h1><br>We value your feedback.</h1>
+            <h5> Please complete the form to share your experiences with other users.<br></h5>
+            <br><br>
         </div>
         <br>
-
         <div class="col-12 m-4">
-            <h4>Rating</h4>
+            <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+                </head>
+                <body>
+                    <div class="row">
+                    <div class="form-group col-xs-6">
+                        <label for="all_classes"><h4>Select a waste category:</h4></label>
+                        <select class="form-control" style="color: black; background: white;" id="all_classes">
+                        {% for o in all_classes %}
+                                <option value="{{ o }}">{{ o }}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group col-xs-6">
+                        <label for="all_entries"><h4>Select an address:</h4></label>
+                        <select class="form-control" style="color:black; background:white;" id="all_entries">
+                        {% for o in all_entries %}
+                                <option value="{{ o }}">{{ o }}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
+                    </div>
+            
+                    <div>
+                    <button type="button" class="btn" style="color:white; background:#686c3c;" id="process_input">Select location</button>
+                    </div><br>
+                <script src="https://code.jquery.com/jquery-1.12.4.js" type="text/javascript"></script>
+                <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+                <script type="text/javascript">
+                    $(document).ready(function() {
+            
+                    $('#all_classes').change(function(){
+            
+                        $.getJSON('/_update_dropdown', {
+                        selected_class: $('#all_classes').val()
+            
+                        }).success(function(data) {
+                            $('#all_entries').html(data.html_string_selected);
+                        })
+                    });
+                    $('#process_input').bind('click', function() {
+            
+                        $.getJSON('/_process_data', {
+                            selected_class: $('#all_classes').val(),
+                            selected_entry: $('#all_entries').val(),
+            
+            
+                        }).success(function(data) {
+                            $('#processed_results').text(data.random_text);
+                        })
+                        return false;
+            
+                    });
+                    });
+                </script>
+        </div>
+        <div class="col-12 m-4">
+            <h4>Rating:</h4>
             <div class="col bg-light p-2">
                 {% for choice in form.rating %}
             
-                {{ choice }}
-                {{ choice.label }}
+                {{ choice }} 
+                {{ choice.label }} 
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             
                 {% endfor %}
             </div>
         </div>
     <br>
     <div class="col-12 m-4">
-        <h4>Review</h4>
+        <h4>Review:</h4>
         <div class="col bg-light p-2">
             {{ form.review(class='form-control', placeholder="Please enter text...") }}
         </div>
     </div>
+    <br>
     <div class="'form-group">
         {{ form.picture.label() }}
         <br>
         {{ form.picture(class='form-control-file') }}
         {% if form.picture.errors %}
-            {% for error in form.pictire.erroors %}
+            {% for error in form.picture.errors %}
                 <span class="'text-danger"> {{ error }} </span><br>
             {% endfor %}
 
         {% endif %}
     </div>
-<br><br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ form.create(class="btn btn-lg btn-block btn-primary") }}
+    <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ form.create(class="btn btn-lg btn-block div-1") }}
 
 </div>
 

@@ -33,14 +33,15 @@ class SearchForm(FlaskForm):
     search = SubmitField(label="Search")
 
 class FeedbackForm(FlaskForm):
-
-    location_choice = StringField("Location", validators=[DataRequired(), Length(1,64)])
     rating = RadioField('Rating', choices=[('1','1'),('2','2'),('3','3'),('4','4'),('5','5')],validators=[DataRequired()])
     review = StringField("Review", validators=[DataRequired(), Length(1,64)])
 
     picture = FileField(label="Add a picture", validators=[FileAllowed(['jpg', 'png', 'jpeg'])])
     upload = SubmitField(label="Upload file")
     create = SubmitField('Create Feedback')
+
+class CreateFeedbackForm(FlaskForm):
+    add = SubmitField('Add Feedback')
 
 class FavouriteForm(FlaskForm):
     location_choice = StringField("Location", validators=[DataRequired(), Length(1, 64)])

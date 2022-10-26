@@ -69,13 +69,13 @@ class Article(db.Model):
 class Feedback(db.Model):
     __tablename__ = 'feedbacks'
     id = db.Column(db.Integer, primary_key=True)
+    location = db.Column(db.String(2000), nullable=False)
     rating = db.Column(db.Integer, nullable=False)
     review = db.Column(db.String(2000), nullable=False)
     image_file = db.Column(db.String(2000))
-    owner_id = db.Column(db.Integer, db.ForeignKey('userinfos.id'))
 
     def __repr__(self) -> str:
-        return "<id : {}, Rating : {}, Review : {}>".format(self.owner_id, self.rating, self.review)
+        return "<Rating : {}, Review : {}>".format(self.rating, self.review)
 
 class Favourites(db.Model):
     __tablename__ = 'favourites'
@@ -88,7 +88,7 @@ class Favourites(db.Model):
     def __repr__(self) -> str:
         return "<id : {}, location : {}, address : {}, image: {} >".format(self.owner_id, self.location, self.address,self.image)
   
-class ResNet(nn.Module):
+'''class ResNet(nn.Module):
     def __init__(self, out_features):
         super(ResNet, self).__init__()
         self.res = models.resnet50(weights='ResNet50_Weights.IMAGENET1K_V1')
@@ -102,7 +102,7 @@ input_transform = transforms.Compose([
     transforms.ToTensor(),
     transforms.Resize((224,224)),
     #transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
-])
+])'''
 
 @login_manager.user_loader
 def load_user(userid):

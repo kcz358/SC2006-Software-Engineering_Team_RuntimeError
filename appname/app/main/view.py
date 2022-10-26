@@ -1,8 +1,8 @@
-from flask import request, render_template, redirect, g, url_for, session, flash, get_template_attribute
+from flask import request, render_template, redirect, g, url_for, session, flash, get_template_attribute, jsonify
 from flask_login import login_required, logout_user, login_user, current_user
 from ..mail import send_mail
 from . import main
-from .forms import LoginForm, RegisterForm, SearchForm, FeedbackForm, FavouriteForm
+from .forms import LoginForm, RegisterForm, SearchForm, FeedbackForm, FavouriteForm, CreateFeedbackForm
 from ..initDataFrame import combined_df
 from .. import db
 from .. import combined_df
@@ -15,6 +15,7 @@ import torch
 import numpy as np
 import io
 from PIL import Image
+import sqlite3
 from app import create_app
 
 
@@ -236,20 +237,94 @@ def save_image(picture_file):
     picture_file.save(picture_path)
     return picture_name
 
+def get_dropdown_values():
+
+    myDict = { 'Lighting Waste': [ combined_df["ADDRESSSTREETNAME"].iloc[i] for i in range(518) if combined_df["CATEGORY"].iloc[i] == "Lighting Waste" ],
+                'E-waste': [ combined_df["ADDRESSSTREETNAME"].iloc[i] for i in range(518) if combined_df["CATEGORY"].iloc[i] == "E-Waste" ],
+                'Cash for Trash': [ combined_df["ADDRESSSTREETNAME"].iloc[i] for i in range(518) if combined_df["CATEGORY"].iloc[i] == "Cash for trash" ],
+                'Second-hand Goods': [ combined_df["ADDRESSSTREETNAME"].iloc[i] for i in range(518) if combined_df["CATEGORY"].iloc[i] == "Second-hand goods" ] }
+    
+    class_entry_relations = myDict
+                        
+    return class_entry_relations
+
+
+@main.route('/_update_dropdown')
+def update_dropdown():
+
+    # the value of the first dropdown (selected by the user)
+    selected_class = request.args.get('selected_class', type=str)
+
+    # get values for the second dropdown
+    updated_values = get_dropdown_values()[selected_class]
+
+    # create the value sin the dropdown as a html string
+    html_string_selected = ''
+    for entry in updated_values:
+        html_string_selected += '<option value="{}">{}</option>'.format(entry, entry)
+
+    return jsonify(html_string_selected=html_string_selected)
+
+global selected_entry 
+global selected_class
+@main.route('/_process_data')
+def process_data():
+    global selected_class
+    selected_class = request.args.get('selected_class', type=str)
+    global selected_entry
+    selected_entry = request.args.get('selected_entry', type=str)
+
+    return jsonify(random_text="Waste category: {}\n\n Address: {}.".format(selected_class, selected_entry))
+
 @main.route("/feedback", methods = ['GET', 'POST'])
 @login_required
-def feedback():
+def displayFeedback():
+    form_addFeedback = CreateFeedbackForm()
+    if form_addFeedback.validate_on_submit():
+        return redirect(url_for('main.createFeedback'))
+
+    class_entry_relations = get_dropdown_values()
+
+    default_classes = sorted(class_entry_relations.keys())
+    default_values = class_entry_relations[default_classes[0]]
+
+    return render_template("displayfeedback.html", form=form_addFeedback, all_classes=default_classes, all_entries=default_values)
+
+@main.route("/feedback/show", methods = ['GET', 'POST'])
+@login_required
+def showFeedback():
+    feedback = []
+    temp_db = sqlite3.connect("/Users/tanleying/SC2006-Software-Engineering_Team_RuntimeError/appname/app/app.db")
+
+    temp_db.row_factory = sqlite3.Row
+    values = temp_db.execute("SELECT * FROM feedbacks WHERE location LIKE '%s'" % selected_entry).fetchall()
+
+    for item in values:
+        feedback.append({k: item[k] for k in item.keys()})
+    temp_db.close()
+    return render_template("showfeedback.html",feedback=feedback, selected_entry=selected_entry, selected_class=selected_class)
+
+
+@main.route("/feedback/create", methods = ['GET', 'POST'])
+@login_required
+def createFeedback():
     form_feedback = FeedbackForm()
+
+    class_entry_relations = get_dropdown_values()
+
+    default_classes = sorted(class_entry_relations.keys())
+    default_values = class_entry_relations[default_classes[0]]
+
     image_file = ""
     if form_feedback.validate_on_submit():
         image_file = save_image(form_feedback.picture.data)
-        feedback_to_create = Feedback(rating=form_feedback.rating.data,review=form_feedback.review.data, image_file=image_file)
+        feedback_to_create = Feedback(location=selected_entry,rating=form_feedback.rating.data,review=form_feedback.review.data, image_file=image_file)
         db.session.add(feedback_to_create)
         db.session.commit()
         flash("Feedback created successfully!")
         return redirect(url_for('main.main_page'))
     image_url=url_for('static', filename="feedback_pics/"+image_file)
-    return render_template("feedback.html", form=form_feedback, image_url=image_url)
+    return render_template("feedback.html", form=form_feedback, image_url=image_url, all_classes=default_classes, all_entries=default_values)
 
 @main.route("/favourite", methods=['GET', 'POST'])
 @login_required
