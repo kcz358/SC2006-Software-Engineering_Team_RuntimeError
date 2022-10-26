@@ -221,17 +221,17 @@ def articles_page():
     if request.method=='POST':
         articleType=request.form['submit_button']
         if articleType=="article1": 
-            return redirect(url_for('article_page',number=1))
+            return redirect(url_for('main.article_page',number=1))
         elif articleType=="article2":
-            return redirect(url_for('article_page', number=2))
+            return redirect(url_for('main.article_page', number=2))
         elif articleType=="article3":
-            return redirect(url_for('article_page', number=3))
+            return redirect(url_for('main.article_page', number=3))
         elif articleType=="article4":
-            return redirect(url_for('article_page', number=4))
+            return redirect(url_for('main.article_page', number=4))
         elif articleType=="article5":
-            return redirect(url_for('article_page', number=5))
+            return redirect(url_for('main.article_page', number=5))
         else:
-            return redirect(url_for('article_page', number=6))
+            return redirect(url_for('main.article_page', number=6))
     else:
         return render_template('articles.html',articles=articles)
 
