@@ -19,7 +19,7 @@ def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = "secret keys"
     #Set your own sql server url based on the user you create and the database you use
-    app.config['SQLALCHEMY_DATABASE_URI'] = ""
+    app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///app.db"
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     #Setup Your own smtp mail server here
     #app.config['MAIL_SERVER']=''
@@ -28,7 +28,7 @@ def create_app():
     #app.config['MAIL_PASSWORD'] = 
     #app.config['MAIL_USE_TLS'] = 
     #app.config['MAIL_USE_SSL'] = 
-    #mail.init_app(app)
+    # mail.init_app(app)
     db.init_app(app)
     login_manager.init_app(app)
     from .main import main as main_blueprint

@@ -6,12 +6,13 @@ from .forms import LoginForm, RegisterForm, SearchForm, FeedbackForm, FavouriteF
 from ..initDataFrame import combined_df
 from .. import db
 from .. import combined_df
-from ..models import Userinfo, Article, Feedback, ResNet, input_transform
-from onemapsg import OneMapClient
+from ..models import Userinfo, Article, Feedback
+# from ..models import ResNet, input_transform
+#from onemapsg import OneMapClient
 import pandas
 import requests, json
 import os
-import torch
+#import torch
 import numpy as np
 import io
 from PIL import Image
@@ -333,4 +334,3 @@ def favourites():
     if request.method=="POST": 
         flash("successful in searching u mofo")
     return render_template("favourite.html",form=form_favourite)
-

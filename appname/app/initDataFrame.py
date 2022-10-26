@@ -255,4 +255,4 @@ df3['CATEGORY'] = "E-Waste"
 
 frames = [df1, df2, df3, df4]
 combined_df = pd.concat(frames, ignore_index=True)
-# print(combined_df.to_string())'''
+print(combined_df.to_string())

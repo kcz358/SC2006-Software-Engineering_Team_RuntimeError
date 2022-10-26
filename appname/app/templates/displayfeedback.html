@@ -1,16 +1,13 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<title>Feedback</title>
 <div class="container">
     <div class="row text-center m-4"><h1>Feedback</h1></div>
 
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-    </head>
-    <body>
         <div class="row">
           <div class="form-group">
-            <label for="all_classes"><h3>Select a waste category:</h3></label>
+            <label for="all_classes"><h3>Select a waste category:</h3></label> 
+            <br><br>
             <select class="form-control" style="color: black; background: white; height: 50px; font-size: 17px;" id="all_classes">
               {% for o in all_classes %}
                       <option value="{{ o }}">{{ o }}</option>
@@ -19,7 +16,9 @@
           </div>
           <br>
           <div class="form-group">
+            <br><br>
             <label for="all_entries"><h3>Select a location:</h3></label>
+            <br><br>
             <select class="form-control" style="color:black; background: white; height: 50px; font-size: 17px;" id="all_entries">
               {% for o in all_entries %}
                       <option value="{{ o }}">{{ o }}</option>
@@ -28,6 +27,7 @@
           </div>
         </div>
         <div>
+          <br><br>
           <button type="button" class="btn" style="color:white; background:grey;" id="process_input">Search</button>
           <a href="{{url_for('main.showFeedback')}}">          
             <button type="button" class="btn" style="color:white; background:grey;">Display</button>

@@ -3,8 +3,8 @@ from . import db, login_manager
 from flask import current_app
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous.serializer import Serializer
-from torchvision import models, transforms
-import torch.nn as nn
+#from torchvision import models, transforms
+#import torch.nn as nn
 
 class Userinfo(UserMixin, db.Model):
     __tablename__ = 'userinfos'
@@ -76,6 +76,7 @@ class Feedback(db.Model):
 
     def __repr__(self) -> str:
         return "<Rating : {}, Review : {}>".format(self.rating, self.review)
+
 
 class Favourites(db.Model):
     __tablename__ = 'favourites'
