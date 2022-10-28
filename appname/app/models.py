@@ -47,11 +47,11 @@ class Userinfo(UserMixin, db.Model):
     
 class Article(db.Model):
     id=db.Column(db.Integer(),primary_key=True)
-    author=db.Column(db.String(),nullable=False)
-    date=db.Column(db.String(),nullable=False)
-    caption=db.Column(db.String(),nullable=False)
-    genre=db.Column(db.String(),nullable=False)
-    body=db.Column(db.String(),nullable=True)
+    author=db.Column(db.String(200),nullable=False)
+    date=db.Column(db.String(200),nullable=False)
+    caption=db.Column(db.String(200),nullable=False)
+    genre=db.Column(db.String(200),nullable=False)
+    body=db.Column(db.String(2000),nullable=True)
     
     def getAuthor(self):
         return self.author
