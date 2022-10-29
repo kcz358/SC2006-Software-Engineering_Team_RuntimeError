@@ -1,8 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField, ValidationError, SelectField, RadioField, BooleanField
 from flask_wtf.file import FileField, FileAllowed
-from wtforms.validators import DataRequired, EqualTo, Email, Length, Regexp, InputRequired, Optional
-
+from wtforms.validators import DataRequired, EqualTo, Email, Length, Regexp, Optional
 from ..models import Userinfo
 
 class LoginForm(FlaskForm):
@@ -27,29 +26,12 @@ class RegisterForm(FlaskForm):
         if Userinfo.query.filter_by(username = field.data).first():
             raise ValidationError("Username already exists")
 
-# class RequiredIf(InputRequired):
-#     field_flags = ('requiredif',)
-#
-#     def __init__(self, other_field_name, message=None, *args, **kwargs):
-#         self.other_field_name = other_field_name
-#         self.message = message
-#
-#     def __call__(self, form, field):
-#         other_field = form[self.other_field_name]
-#         if other_field is None:
-#             raise Exception('no field named "%s" in form' % self.other_field_name)
-#         if bool(other_field.data):
-#             Optional().__call__(form, field)
-#         else:
-#             super(RequiredIf, self).__call__(form, field)
 class SearchForm(FlaskForm):
     category = SelectField(label="Category", validators=[DataRequired()], choices=[('E-Waste', 'E-Waste'), ('Second-hand goods', 'Second-hand goods'), ('Cash for trash', 'Cash for trash'),('Lighting Waste', 'Lighting Waste')])
     location = StringField(label="Location", validators=[Optional()])
     isCurrentLocation = BooleanField(label="Get current location", validators=[Optional()])
     mode = SelectField(label="Mode Of Transport", validators=[DataRequired()], choices=[('walking', 'walking'), ('bicycling', 'bicycling'), ('driving', 'driving'), ('transit', 'transit')])
     search = SubmitField(label="Search")
-
-
 
 class FeedbackForm(FlaskForm):
     rating = RadioField('Rating', choices=[('1','1'),('2','2'),('3','3'),('4','4'),('5','5')],validators=[DataRequired()])

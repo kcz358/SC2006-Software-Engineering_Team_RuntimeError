@@ -1,10 +1,11 @@
-from flask import request, render_template, redirect, g, url_for, session, flash
+from flask import request, render_template, redirect, g, url_for, session, flash, get_template_attribute, jsonify
 from flask_login import login_required, logout_user, login_user, current_user
 from ..mail import send_mail
 from . import main
-from .forms import LoginForm, RegisterForm, SearchForm
-# from ..initDataFrame import combined_df
-from .. import db, combined_df
+from .forms import LoginForm, RegisterForm, SearchForm, FeedbackForm, FavouriteForm, CreateFeedbackForm, AddFavourites
+from ..initDataFrame import combined_df
+from .. import db
+from .. import combined_df
 from ..models import Userinfo, Article, Feedback, Favourites, ResNet, input_transform
 from onemapsg import OneMapClient
 import pandas
@@ -13,7 +14,13 @@ import numpy as np
 from PIL import Image
 import io
 import requests, json
-
+import os
+import torch
+import numpy as np
+import io
+from PIL import Image
+import sqlite3
+from app import create_app
 
 
 @main.before_request
@@ -70,8 +77,9 @@ def register():
         form_register.password.data = ''
         form_register.confirm.data = ''
         #Generate confirmation token
-        token = user.generate_confirmation_token()
-        send_mail(sender = "admin@appname",templates = 'email/confirm',to = user.email, user = user, token = token)
+        #Uncomment this if you set up your mail server
+        #token = user.generate_confirmation_token()
+        #send_mail(sender = "admin@appname",templates = 'email/confirm',to = user.email, user = user, token = token)
         flash("Create Account successful. A confirmation email has been sent to your email")
         return redirect(url_for("main.login", create_account = True))
     
@@ -266,6 +274,10 @@ def inference_sync():
         return html
     return "<p> No result </p>"
 
+#dummy dictionary
+labels = {0:"E-waste", 1:"2nd-hand", 2:"lightning waste", 3:"cash for trash"}
+
+
 @main.route("/findabin/thisbin", methods = ['GET', 'POST'])
 def thisBinPage():
     my_var = request.args.get('my_var', None)
@@ -279,6 +291,7 @@ def thisBinPage():
     zoom = "17"
     url_base = "https://developers.onemap.sg/commonapi/staticmap/getStaticImage?layerchosen=default&lat="
     url = url_base + str(lat_destination) + "&lng=" + str(long_destination) + "&zoom=" + zoom + "&height=512&width=512" + "&polygons=&lines=&points=[" + str(lat_destination) + "," + str(long_destination) + ",\"175,50,0\",\"A\"]" + "|[" + lat_source + "," + long_source + ",\"255,255,178\",\"B\"]&color=&fillColor="
+
     form_favourite = AddFavourites()
     if form_favourite.validate_on_submit():
         if not current_user.is_authenticated:
@@ -291,6 +304,7 @@ def thisBinPage():
         db.session.commit()
         flash("Favourites Added!")
     return render_template('thisBin.html', my_var = int(my_var), data = combined_df,form=form_favourite, source_string = source_string, url=url)
+
 
 @main.route("/map")
 def viewMap():
@@ -315,17 +329,17 @@ def articles_page():
     if request.method=='POST':
         articleType=request.form['submit_button']
         if articleType=="article1": 
-            return redirect(url_for('article_page',number=1))
+            return redirect(url_for('main.article_page',number=1))
         elif articleType=="article2":
-            return redirect(url_for('article_page', number=2))
+            return redirect(url_for('main.article_page', number=2))
         elif articleType=="article3":
-            return redirect(url_for('article_page', number=3))
+            return redirect(url_for('main.article_page', number=3))
         elif articleType=="article4":
-            return redirect(url_for('article_page', number=4))
+            return redirect(url_for('main.article_page', number=4))
         elif articleType=="article5":
-            return redirect(url_for('article_page', number=5))
+            return redirect(url_for('main.article_page', number=5))
         else:
-            return redirect(url_for('article_page', number=6))
+            return redirect(url_for('main.article_page', number=6))
     else:
         return render_template('articles.html',articles=articles)
 
@@ -335,7 +349,6 @@ def article_page(number):
     id=int(number)-1
     article=Article.query.all()[id]
     return render_template('article.html',article=article)
-
 
 def save_image(picture_file):
     app = create_app()

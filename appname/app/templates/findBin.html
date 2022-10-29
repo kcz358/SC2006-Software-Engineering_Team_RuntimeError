@@ -3,6 +3,7 @@
 <div class="container">
     <h2 class="container text-center text-black m-4" style="padding: 20px">FIND A BIN!</h2>
     <div class="justify-content-center">
+      <form id="image_form" action="/inference_sync" method="post"></form>
       <form action="{{url_for('main.findBin')}}" method="post">
         {{search_form.hidden_tag()}}
         <div class="row justify-content-evenly">
@@ -34,7 +35,7 @@
               <div style="padding:15px">
                 <i class="fa-regular fa-image fa-2xl"></i>
                 <br>
-                <p style="padding-top:15px">Upload an image</p>
+                <p style="padding-top:15px"><input type="file" id="formFile" name="formFile" class="form-control" form="image_form"></p>
               </div>
 
             </button>
@@ -125,4 +126,31 @@
 
     </div>
 </div>
+<script>
+  $(function(){
+    $("#formFile").change(function(){
+      $("#info").empty();
+      $("#image_form").submit();
+    });
+  });
+
+  $(document).ready(function(){
+    $("#image_form").on('submit', function(e){
+      e.preventDefault();
+      var form_data = new FormData($("#image_form")[0]);
+      $.ajax({
+        type:'POST',
+        url:'/inference_sync',
+        data:form_data,
+        cache:false,
+        processData:false,
+        contentType:false,
+        dataType:false,
+        success: function(data){
+            $("#info").html(data);
+        }
+      });
+    });
+  });
+</script>
 {% endblock %}

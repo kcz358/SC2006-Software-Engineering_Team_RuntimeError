@@ -90,6 +90,10 @@ df2 = create_df(r'C:\Users\marys\OneDrive\Documents\GitHub\SC2006-Software-Engin
 #initialise df4 for lighting waste
 path =r'C:\Users\marys\OneDrive\Documents\GitHub\SC2006-Software-Engineering_Team_RuntimeError\appname\app\dataset\lighting-waste-collection-points-kml.kml'
 
+
+#initialise df4 for lighting waste
+
+
 d = {'ADDRESSPOSTALCODE': [],  # attributes, landx,landy,photourl
      'DESCRIPTION': [],
      'ADDRESSBUILDINGNAME': [],
@@ -170,7 +174,6 @@ df4['LONGITUDE'] = longitude
 df4['CATEGORY'] = "Lighting Waste"
 
 #initialise df3 for e-waste
-
 path =r'C:\Users\marys\OneDrive\Documents\GitHub\SC2006-Software-Engineering_Team_RuntimeError\appname\app\dataset\e-waste-recycling-kml.kml'
 
 
@@ -262,4 +265,5 @@ combined_df = pd.concat(frames, ignore_index=True)
 for i in range(0, 518):
     if combined_df.iloc[i]['CATEGORY'] == "Lighting Waste":
         print(combined_df.iloc[i])
+
 

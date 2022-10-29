@@ -2,6 +2,11 @@
 
 {% block content %}
 <style>
+
+.div-1 {
+    background-color: #686c3c;
+}
+
 img {
     display: block;
     margin-left: auto;
@@ -20,6 +25,19 @@ img {
   margin: 4px 2px;
   cursor: pointer;
 }
+
+.flex-parent{
+    display:flex;
+}
+
+.jc-center{
+    justify-content:center;
+}
+
+button.margin-right {
+    margin-right:20px;
+}
+
 </style>
 
 <div class = "container">
@@ -49,11 +67,10 @@ img {
     </div>
     &nbsp &nbsp &nbsp &nbsp &nbsp
     <div align="right">
-        <a href = https://www.google.com/maps?saddr={{source_string}}&daddr={{data['LATITUDE'].iloc[my_var]}},{{data['LONGITUDE'].iloc[my_var]}} >
+        <a href = http://maps.google.com/maps?z=12&t=m&q=loc:{{data['LATITUDE'].iloc[my_var]}}+{{data['LONGITUDE'].iloc[my_var]}}>
             <button type="button" class="btn btn-lg" style="color:white;background:#686c3c;"> Google Maps </button>
-
         </a>
-    </div>
+</div>
 </div>
 
 {% endblock %}

@@ -1,0 +1,154 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="container">
+   <div class="row text-center m-4">  <h1>Favourites</h1>
+    <br>
+    <h5>Category: Lighting</h5>
+       <br><br><br>
+       <nav>
+            <a href="{{url_for('main.favourites_ewaste')}}">E Waste</a>
+            <a href="{{url_for('main.favourite_secondHand')}}">2nd Hand</a>
+            <a href="{{url_for('main.favourite_cash')}}">Cash</a>
+            <a href="{{url_for('main.favourite_lighting')}}">Lighting</a>
+        </nav>
+</div>
+
+<div class="row">
+  <div class="container">
+
+      {% for i in data %}
+      {% if i['user_email'] == current_user.email %}
+    <div class="card">
+      <h1>{{ i['location_streetname']|title }}</h1>
+      <h5>{{ i['location_streetname']|title + ',' + ' Singapore '+i['location_postal'] }}</h5>
+        <br>
+      <div class="fakeimg" style="height:300px;">
+          <center><img src="/static/images/light-waste.png", height="350px",width="200px"></center>
+      </div>
+        <br><br><br>
+        <a href="{{url_for('main.findBin')}}">
+            <button type="button" class="btn" style="color:white; background:#686c3c;">Find Bin</button>
+        </a>
+
+    </div>
+
+      {% endif %}
+      {% endfor %}
+
+  </div>
+</div>
+
+<style>
+
+body {
+  font-family: Arial;
+  background: #f1f1f1;
+}
+
+.header {
+  padding: 30px;
+  font-size: 40px;
+  text-align: center;
+  background: white;
+}
+
+/* Create two unequal columns that floats next to each other */
+/* Left column */
+.leftcolumn {
+  float: left;
+  width: 75%;
+}
+
+
+.rightcolumn {
+  float: left;
+  width: 25%;
+  padding-left: 20px;
+}
+
+
+.fakeimg {
+  background-color: #D1D8B3;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+
+.card {
+
+  margin: 0 auto;
+  font-family: 'Didot';
+  width: 50%;
+  background-color: #D1D8B3!important;
+  padding: 20px;
+  margin-top: 60px;
+}
+
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.footer {
+  padding: 20px;
+  text-align: center;
+  background: #ddd;
+  margin-top: 20px;
+}
+
+
+@media screen and (max-width: 800px) {
+  .leftcolumn, .rightcolumn {
+    width: 100%;
+    padding: 0;
+  }
+}
+
+nav{
+            background-color:#D9D9D9;
+            min-height: 50px;
+            text-align: center;
+            line-height: 50px;
+            justify-content: space-evenly;
+            margin: auto
+        }
+        nav a{
+            position: relative;
+            color: #8E9C55;
+            width: 50%;
+            font-size: 18px; text-decoration: none;
+            font-family: 'Poppins', sans-serif;
+            margin: 0 110px;
+            padding: 0 10px;
+        }
+
+        a:hover{
+        color: #49512D;
+        }
+
+        a::after{
+        content: "";
+        position: absolute;
+        height: 2px;
+        width: 0;
+        left: 0;
+        bottom: -10px;
+        background-color: #606A39;
+        transform-origin: bottom-right;
+        transition: 0.3s;
+        }
+
+        a:hover::after{
+        width: 100%;
+        }
+
+
+
+
+</style>
+
+    {% endblock %}
