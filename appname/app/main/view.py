@@ -5,9 +5,13 @@ from . import main
 from .forms import LoginForm, RegisterForm, SearchForm
 # from ..initDataFrame import combined_df
 from .. import db, combined_df
-from ..models import Userinfo
+from ..models import Userinfo, Article, Feedback, Favourites, ResNet, input_transform
 from onemapsg import OneMapClient
 import pandas
+import torch
+import numpy as np
+from PIL import Image
+import io
 import requests, json
 
 
@@ -98,8 +102,31 @@ def getcoordinates(address):
     else:
         pass
 
+def getAddress(lat,long):
+    print("your lat is " + str(lat) + " long is " + str(long))
+    #token expires every 3 days, get a new one at one map api after 31 oct (pls update this date)
+    req = requests.get('https://developers.onemap.sg/privateapi/commonsvc/revgeocode?location=' + str(lat) +',' + str(long) + '&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjkzNjEsInVzZXJfaWQiOjkzNjEsImVtYWlsIjoibWFyeXNvaGhjQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY2NzA1NzQ0NiwiZXhwIjoxNjY3NDg5NDQ2LCJuYmYiOjE2NjcwNTc0NDYsImp0aSI6IjFmMDJkY2UxZTFhZjIwY2E0YTA2OWZmNDVkZDkwYTYyIn0.XCBxU38zuV_5bJHgCytMTK-RRO0KhVcgS6hfWldJqZQ')
+    resultsdict = eval(req.text)
+    print(resultsdict)
+    if len(resultsdict['GeocodeInfo'])>0:
+        if resultsdict['GeocodeInfo'][0]['BUILDINGNAME'] == "null":
+            building_name=""
+        else:
+            building_name= str(resultsdict['GeocodeInfo'][0]['BUILDINGNAME']) + " "
+        if resultsdict['GeocodeInfo'][0]['BLOCK'] == "null":
+            block=""
+        else:
+            block= str(resultsdict['GeocodeInfo'][0]['BLOCK']) + " "
+        if resultsdict['GeocodeInfo'][0]['ROAD'] == "null":
+            road=""
+        else:
+            road= str(resultsdict['GeocodeInfo'][0]['ROAD']) + " "
+        return building_name+block+ road
+    else:
+        return None
+
 def getRoute(source, dest, mode):
-    print("getting route")
+    # print("getting route")
     api_key = 'AIzaSyDfTs7og5-oCAavy4pm_fVHBj6HkqaGLyU'
     url = "https://maps.googleapis.com/maps/api/distancematrix/json?"
 
@@ -110,7 +137,7 @@ def getRoute(source, dest, mode):
                      '&destinations=' + dest + '&mode=' + mode+
                      '&key=' + api_key, headers=headers, data=payload)
     result = eval(response.text)
-    print(response.text)
+    # print(response.text)
     return result
 
 def getNearestBin(source, category, mode):
@@ -135,6 +162,21 @@ def getNearestBin(source, category, mode):
         formatted_results.append(temp)
     return formatted_results
 
+def getCurrentLocation():
+    api_key = 'AIzaSyDfTs7og5-oCAavy4pm_fVHBj6HkqaGLyU'
+    url = "https://www.googleapis.com/geolocation/v1/geolocate?key="
+
+    payload = {}
+    headers = {}
+    try:
+        response = requests.request("POST", url + api_key, headers=headers, data=payload)
+        result = eval(response.text)
+        # print(result['location']['lat'], result['location']['lng'])
+        return result['location']['lat'], result['location']['lng']
+    except:
+        flash("Unable to get your address! Enter an address or try again!")
+        return None
+
 @main.route("/findabin", methods=['GET', 'POST'])
 # @login_required
 def findBin():
@@ -145,26 +187,125 @@ def findBin():
     location = None
     lat = None
     long = None
+    source_string = None
     binsArr=None
-    if request.method == 'POST' and search_form.validate():
+    success = False
+    # if request.method == 'POST' and request.form.get('findLocation') == 'findLocation':
+    #     print("getting your location")
+    #     lat, long = getCurrentLocation()
+    #
+    #     if (lat != None and long != None):
+    #         location = getAddress(lat, long)
+    #         has_currentLocation = True
+    #         flash("Current location is: " + location)
+    # if currentLocation_form.validate() and request.method == 'POST'  :
+    #     print("getting your location")
+    #     lat, long = getCurrentLocation()
+    #
+    #     if (lat != None and long != None):
+    #         location = getAddress(lat, long)
+    #         has_currentLocation = True
+    #         flash("Current location is: " + location)
+
+    if search_form.validate() and request.method == 'POST'  :
+        print("YESSS")
         category = search_form.category.data
-        location = search_form.location.data
-        mode = search_form.mode.data
-        has_searched = True
-        lat, long = getcoordinates(location)
-        source = str(lat)+','+str(long)
-        binsArr = getNearestBin(source, category, mode)
-    return render_template("findBin.html", form=search_form, has_searched=has_searched, searched=(category, location), search_results=binsArr, data=combined_df)
+        isCurrentLocation = search_form.isCurrentLocation.data
+        print("location data "+ search_form.location.data)
+        try:
+            if isCurrentLocation == False:
+                location = search_form.location.data
+                lat, long = getcoordinates(location)
+                success = True
+
+            else:
+                print("getting your location")
+                lat, long = getCurrentLocation()
+
+                if (lat != None and long != None):
+                    location = getAddress(lat, long)
+                    success=True
+                    flash("Current location is: " + location)
+
+            mode = search_form.mode.data
+            has_searched = True
+            if success==True:
+                source_string = str(lat)+','+str(long)
+                binsArr = getNearestBin(source_string, category, mode)
+        except:
+            flash('No location found! Please try again.')
+
+
+    return render_template("findBin.html", search_form=search_form, has_searched=has_searched, searched=(category, location), search_results=binsArr, data=combined_df, lat_source=lat, long_source=long, source_string = source_string)
+
+
+
+#dummy dictionary
+labels = {0:"E-waste", 1:"2nd-hand", 2:"lightning waste", 3:"cash for trash"}
+
+@main.route("/inference_sync", methods = ['GET', 'POST'])
+def inference_sync():
+    model = ResNet(4)
+    #Fill the checkpoints path according to your path where you put the model checkpoints
+    checkpoints = torch.load("resources/epoch_5", map_location='cpu')
+    model.load_state_dict(checkpoints['model_state_dict'])
+    model.eval()
+    if request.method == 'POST' and 'formFile' in request.files:
+        
+        # print("post successful")
+        photo = request.files['formFile']
+        # print("get file")
+        in_memory_file = io.BytesIO()
+        photo.save(in_memory_file)
+        img = Image.open(in_memory_file)
+        img = input_transform(img)
+        output = model(img.unsqueeze(0)).reshape(-1)
+        output_label = np.argmax(output.detach().numpy())
+        generate_text = get_template_attribute("_generate_text.html", "generate_text")
+        html = generate_text(labels.get(output_label))
+        return html
+    return "<p> No result </p>"
 
 @main.route("/findabin/thisbin", methods = ['GET', 'POST'])
 def thisBinPage():
     my_var = request.args.get('my_var', None)
-    return render_template('thisBin.html', my_var = int(my_var), data = combined_df)
+    source_string = request.args.get('source_string', None)
+    lat_source = request.args.get('lat_source', None)
+    long_source = request.args.get('long_source', None)
+    lat_destination = combined_df.iloc[int(my_var)]['LATITUDE']
+    long_destination = combined_df.iloc[int(my_var)]['LONGITUDE']
+    print(lat_source)
+    print(long_source)
+    zoom = "17"
+    url_base = "https://developers.onemap.sg/commonapi/staticmap/getStaticImage?layerchosen=default&lat="
+    url = url_base + str(lat_destination) + "&lng=" + str(long_destination) + "&zoom=" + zoom + "&height=512&width=512" + "&polygons=&lines=&points=[" + str(lat_destination) + "," + str(long_destination) + ",\"175,50,0\",\"A\"]" + "|[" + lat_source + "," + long_source + ",\"255,255,178\",\"B\"]&color=&fillColor="
+    form_favourite = AddFavourites()
+    if form_favourite.validate_on_submit():
+        if not current_user.is_authenticated:
+            flash("Login Required!")
+            return redirect(url_for('main.login'))
+        favourites_to_add = Favourites(category=combined_df.iloc[int(my_var)]['CATEGORY'],location_name=combined_df.iloc[int(my_var)]['NAME'],
+                                       location_postal=combined_df.iloc[int(my_var)]['ADDRESSPOSTALCODE'],location_streetname=combined_df.iloc[int(my_var)]['ADDRESSSTREETNAME'],
+                                       user_email=current_user.email)
+        db.session.add(favourites_to_add)
+        db.session.commit()
+        flash("Favourites Added!")
+    return render_template('thisBin.html', my_var = int(my_var), data = combined_df,form=form_favourite, source_string = source_string, url=url)
 
 @main.route("/map")
 def viewMap():
-
-    return render_template("mapView.html")
+    lat_destination = "1.28797431732068"
+    long_destination = "103.805808773108"
+    lat_source = "1.2940154"
+    long_source = "103.8509586"
+    zoom = "17"
+    url_base = "https://developers.onemap.sg/commonapi/staticmap/getStaticImage?layerchosen=default&lat="
+    # response = requests.request("GET", url + lat_destination + "&lng=" + long_destination + "&zoom=" + zoom + "&height=512&width=512" + "&polygons=&lines=&points=[" + lat_destination +","+ long_destination
+    #                             +",\"175,50,0\",\"E\"" + "|[" + lat_source + "," + long_source + "\"255,255,178\",\"S\"]&color=&fillColor=")
+    # url = "https://developers.onemap.sg/commonapi/staticmap/getStaticImage?layerchosen=default&lat=1.28797431732068&lng=103.805808773108&zoom=17&height=512&width=400&polygons=&lines=&points=[1.2940154,103.8509586,\"255,255,178\",\"A\"]|[1.28797431732068,103.805808773108,\"175,50,0\",\"B\"]&color=&fillColor="
+    url = url_base + lat_destination + "&lng=" + long_destination + "&zoom=" + zoom + "&height=512&width=512" + "&polygons=&lines=&points=[" + lat_destination +","+ long_destination+",\"175,50,0\",\"A\"]" + "|[" + lat_source + "," + long_source + ",\"255,255,178\",\"B\"]&color=&fillColor="
+    print(url)
+    return render_template("mapView.html", url=url)
 
 
 @main.route('/articles',methods=['GET','POST'])
@@ -194,3 +335,143 @@ def article_page(number):
     id=int(number)-1
     article=Article.query.all()[id]
     return render_template('article.html',article=article)
+
+
+def save_image(picture_file):
+    app = create_app()
+    picture_name = picture_file.filename
+    picture_path=os.path.join(app.root_path, 'static/feedbackpics', picture_name)
+    picture_file.save(picture_path)
+    return picture_name
+
+def get_dropdown_values():
+
+    myDict = { 'Lighting Waste': [ combined_df["ADDRESSSTREETNAME"].iloc[i] for i in range(518) if combined_df["CATEGORY"].iloc[i] == "Lighting Waste" ],
+                'E-waste': [ combined_df["ADDRESSSTREETNAME"].iloc[i] for i in range(518) if combined_df["CATEGORY"].iloc[i] == "E-Waste" ],
+                'Cash for Trash': [ combined_df["ADDRESSSTREETNAME"].iloc[i] for i in range(518) if combined_df["CATEGORY"].iloc[i] == "Cash for trash" ],
+                'Second-hand Goods': [ combined_df["ADDRESSSTREETNAME"].iloc[i] for i in range(518) if combined_df["CATEGORY"].iloc[i] == "Second-hand goods" ] }
+    
+    class_entry_relations = myDict
+                        
+    return class_entry_relations
+
+
+@main.route('/_update_dropdown')
+def update_dropdown():
+
+    # the value of the first dropdown (selected by the user)
+    selected_class = request.args.get('selected_class', type=str)
+
+    # get values for the second dropdown
+    updated_values = get_dropdown_values()[selected_class]
+
+    # create the value sin the dropdown as a html string
+    html_string_selected = ''
+    for entry in updated_values:
+        html_string_selected += '<option value="{}">{}</option>'.format(entry, entry)
+
+    return jsonify(html_string_selected=html_string_selected)
+
+global selected_entry 
+global selected_class
+
+@main.route('/_process_data')
+def process_data():
+    global selected_class
+    selected_class = request.args.get('selected_class', type=str)
+    global selected_entry
+    selected_entry = request.args.get('selected_entry', type=str)
+
+    return jsonify(random_text="Waste category: {}\n\n Address: {}.".format(selected_class, selected_entry))
+
+@main.route("/feedback", methods = ['GET', 'POST'])
+@login_required
+def displayFeedback():
+    form_addFeedback = CreateFeedbackForm()
+    if form_addFeedback.validate_on_submit():
+        return redirect(url_for('main.createFeedback'))
+
+    class_entry_relations = get_dropdown_values()
+
+    default_classes = sorted(class_entry_relations.keys())
+    default_values = class_entry_relations[default_classes[0]]
+
+    return render_template("displayfeedback.html", form=form_addFeedback, all_classes=default_classes, all_entries=default_values)
+
+@main.route("/feedback/show", methods = ['GET', 'POST'])
+@login_required
+def showFeedback():
+    feedback = []
+    temp_db = sqlite3.connect("/Users/matchajam/PycharmProjects/sc2006ultra/appname/app/app.db")
+
+    temp_db.row_factory = sqlite3.Row
+    values = temp_db.execute("SELECT * FROM feedbacks WHERE location LIKE '%s'" % selected_entry).fetchall()
+
+    for item in values:
+        feedback.append({k: item[k] for k in item.keys()})
+    temp_db.close()
+    return render_template("showfeedback.html",feedback=feedback, selected_entry=selected_entry, selected_class=selected_class)
+
+
+@main.route("/feedback/create", methods = ['GET', 'POST'])
+@login_required
+def createFeedback():
+    form_feedback = FeedbackForm()
+
+    class_entry_relations = get_dropdown_values()
+
+    default_classes = sorted(class_entry_relations.keys())
+    default_values = class_entry_relations[default_classes[0]]
+
+    image_file = ""
+    if form_feedback.validate_on_submit():
+        image_file = save_image(form_feedback.picture.data)
+        feedback_to_create = Feedback(location=selected_entry,rating=form_feedback.rating.data,review=form_feedback.review.data, image_file=image_file)
+        db.session.add(feedback_to_create)
+        db.session.commit()
+        flash("Feedback created successfully!")
+        return redirect(url_for('main.main_page'))
+    image_url=url_for('static', filename="feedback_pics/"+image_file)
+    return render_template("feedback.html", form=form_feedback, image_url=image_url, all_classes=default_classes, all_entries=default_values)
+
+@main.route("/favourite/eWaste", methods=['GET', 'POST'])
+@login_required
+def favourites_ewaste():
+    # print(combined_df)
+    form_favourite = FavouriteForm()
+    #Check the exact string in combined_df!!
+    ewaste_dict = changeSQL_to_dict('E-Waste')
+    #Pass in favourites db as data over here instead of combined df
+    return render_template("ewasteFavourites.html",data=ewaste_dict)
+
+@main.route("/favourite/secondHand", methods=['GET', 'POST'])
+@login_required
+def favourite_secondHand():
+    secondhand_dict = changeSQL_to_dict('Second-hand goods')
+    return render_template("secondHandFavourites.html",data=secondhand_dict)
+
+@main.route("/favourite/cash", methods=['GET', 'POST'])
+@login_required
+def favourite_cash():
+    cash_dict = changeSQL_to_dict('Cash for Trash')
+    return render_template("cashFavourites.html",data=cash_dict)
+
+@main.route("/favourite/lighting", methods=['GET', 'POST'])
+@login_required
+def favourite_lighting():
+    lighting_dict = changeSQL_to_dict('Lighting Waste')
+    return render_template("lightingFavourites.html",data=lighting_dict)
+
+#So that all the favourites pages can use!
+def changeSQL_to_dict(waste_type):
+    filtered_list = []
+    temp_db = sqlite3.connect("/Users/matchajam/PycharmProjects/sc2006ultra/appname/app/app.db")
+    temp_db.row_factory = sqlite3.Row
+    #Change this to user and location and category
+    values = temp_db.execute("SELECT * FROM favourites WHERE category LIKE '%s'" % waste_type).fetchall()
+    for item in values:
+        filtered_list.append({k: item[k] for k in item.keys()})
+    temp_db.close()
+    return filtered_list
+
+

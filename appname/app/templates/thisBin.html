@@ -24,7 +24,8 @@ img {
 
 <div class = "container">
     <div class="justify-content-center align-self-center" style="padding-bottom:10px">
-    <img src = "/static/images/E-waste millenia walk.png" alt="..." height="180" style="width:45%; height:70%;">  
+<!--    static map -->
+    <img src={{url}} alt="Map for destination" height="180" style="width:45%; height:60%;">
     <div align="center" style="padding:10px">
     {% if data.iloc[my_var]['ADDRESSBUILDINGNAME']!=None %}
     <h1> {{data.iloc[my_var]['ADDRESSBUILDINGNAME']}}</h1>
@@ -36,16 +37,21 @@ img {
     </div>    
 </div>
 
-<div class = "row"><br><br><br></div>
+<div class = "row" ><br><br><br></div>
 
-<div class = 'row'>
-    <div class="col-sm-4 text-center">
-        <button type = "button" class = "button"> Add to Favourites </button>
-    </div> 
-    <div class = "col-sm-4"><br><br></div>
-    <div class = "col-sm-4 text-center">
-        <a href = http://maps.google.com/maps?z=12&t=m&q=loc:{{data['LATITUDE'].iloc[my_var]}}+{{data['LONGITUDE'].iloc[my_var]}}>
-        <button type = "button" class = "button"> Google Maps </button>
+
+<div class = 'flex-parent jc-center' style="padding-bottom: 40px">
+    <div align="left">
+        <form method="POST" class="form-favourites">
+            {{ form.hidden_tag() }}
+            {{ form.addFav(class="btn btn-lg btn-block", style="color:white;background:#686c3c;") }}
+        </form>
+    </div>
+    &nbsp &nbsp &nbsp &nbsp &nbsp
+    <div align="right">
+        <a href = https://www.google.com/maps?saddr={{source_string}}&daddr={{data['LATITUDE'].iloc[my_var]}},{{data['LONGITUDE'].iloc[my_var]}} >
+            <button type="button" class="btn btn-lg" style="color:white;background:#686c3c;"> Google Maps </button>
+
         </a>
     </div>
 </div>
