@@ -60,7 +60,7 @@ if __name__ == "__main__":
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-            epoch_loss += loss
+            epoch_loss += loss.item()
             output_label = np.argmax(output.cpu().detach().numpy(), axis=1)
             accuracy = accuracy_score(output_label, labels.cpu().detach().numpy())
             epoch_accuracy += accuracy
