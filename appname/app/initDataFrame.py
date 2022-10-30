@@ -262,8 +262,8 @@ frames = [df1, df2, df3, df4]
 combined_df = pd.concat(frames, ignore_index=True)
 
 
-for i in range(0, 518):
-    if combined_df.iloc[i]['CATEGORY'] == "Lighting Waste":
-        print(combined_df.iloc[i])
+# for i in range(0, 518):
+#     if combined_df.iloc[i]['CATEGORY'] == "Lighting Waste":
+#         print(combined_df.iloc[i])
 
-
+print(combined_df['NAME'].unique())

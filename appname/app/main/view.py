@@ -151,13 +151,35 @@ def getRoute(source, dest, mode):
 def getNearestBin(source, category, mode):
     arrResults = []
     for i in range(len(combined_df)):
+        tempArr = []
         if combined_df['CATEGORY'].iloc[i] == category:
             dest = str(combined_df['LATITUDE'].iloc[i]) + ',' + str(combined_df['LONGITUDE'].iloc[i])
             result = getRoute(source,dest, mode)
             time = result['rows'][0]['elements'][0]['duration']["value"] # in seconds
-            arrResults.append((round(time/60),i)) #convert time to minutes
+            tempArr.append(round(time/60)) #convert time to minutes
+            tempArr.append(i)
+            if combined_df.iloc[i]['NAME'] == "Lightbulb/Lamp Recycling Points":
+                tempArr.append("Lightbulb Lamp Recycling Points.jpg")
+            elif combined_df.iloc[i]['NAME'] == "Project Homecoming - Ink and toner recycling":
+                tempArr.append("Project Homecoming - Ink and toner recycling.jpg")
+            elif combined_df.iloc[i]['NAME'] == "NEA Producer Responsibility Scheme - ALBA E-waste Recycling Programme":
+                tempArr.append("E-waste millenia walk.png")
+            elif combined_df.iloc[i]['NAME'] == "Cash for Trash Station":
+                tempArr.append("Cash for Trash Station.jpg")
+            elif combined_df.iloc[i]['NAME'] == "PC Dreams":
+                tempArr.append("PC Dreams.jpg")
+            elif combined_df.iloc[i]['NAME'] == "The Salvation Army":
+                tempArr.append("The Salvation Army.jpg")
+            elif combined_df.iloc[i]['NAME'] == "MINDS Shop":
+                tempArr.append("MINDS Shop.jpg")
+            elif combined_df.iloc[i]['NAME'] == "Cash Converters":
+                tempArr.append("Cash Converters.jpg")
+            elif combined_df.iloc[i]['NAME'] == "Touch Community Services: 301 Thrift Mart":
+                tempArr.append("Touch Community Services.png")
+            arrResults.append(tempArr)
             arrResults.sort()
         i += 1
+    # print(arrResults)
     formatted_results = []
     temp = []
     for j in range(len(arrResults)):
@@ -168,6 +190,8 @@ def getNearestBin(source, category, mode):
 
     if len(temp) !=0:
         formatted_results.append(temp)
+
+    # print(formatted_results)
     return formatted_results
 
 def getCurrentLocation():
@@ -198,22 +222,7 @@ def findBin():
     source_string = None
     binsArr=None
     success = False
-    # if request.method == 'POST' and request.form.get('findLocation') == 'findLocation':
-    #     print("getting your location")
-    #     lat, long = getCurrentLocation()
-    #
-    #     if (lat != None and long != None):
-    #         location = getAddress(lat, long)
-    #         has_currentLocation = True
-    #         flash("Current location is: " + location)
-    # if currentLocation_form.validate() and request.method == 'POST'  :
-    #     print("getting your location")
-    #     lat, long = getCurrentLocation()
-    #
-    #     if (lat != None and long != None):
-    #         location = getAddress(lat, long)
-    #         has_currentLocation = True
-    #         flash("Current location is: " + location)
+
 
     if search_form.validate() and request.method == 'POST'  :
         print("YESSS")
@@ -240,6 +249,8 @@ def findBin():
             if success==True:
                 source_string = str(lat)+','+str(long)
                 binsArr = getNearestBin(source_string, category, mode)
+                # print(binsArr)
+
         except:
             flash('No location found! Please try again.')
 

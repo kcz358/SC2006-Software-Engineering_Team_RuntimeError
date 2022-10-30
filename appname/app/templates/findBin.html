@@ -97,7 +97,7 @@
             <div class="col-3 justify-content-center align-self-center border border-dark rounded location-thumbnail" style="padding-bottom:10px">
               <div class="thumbnail">
                 <a href = "{{url_for('main.thisBinPage', my_var = item[1], source_string = source_string, lat_source = lat_source, long_source = long_source)}}">
-                <button type = "img" alt = "..." height = "180" class = "rounded"> <img img src = "/static/images/E-waste millenia walk.png" alt="..." height="180" class="rounded"> </button>
+                <button type = "img" alt = "..." height = "180" class = "rounded"> <img img src = "/static/images/{{item[2]}}" alt="..." height="180" width="280" class="rounded"> </button>
                 </a>
                 <div align="center" style="padding:10px">
                   {% if data.iloc[item[1]]['ADDRESSBUILDINGNAME']!=None %}
