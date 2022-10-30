@@ -308,12 +308,18 @@ def thisBinPage():
         if not current_user.is_authenticated:
             flash("Login Required!")
             return redirect(url_for('main.login'))
-        favourites_to_add = Favourites(category=combined_df.iloc[int(my_var)]['CATEGORY'],location_name=combined_df.iloc[int(my_var)]['NAME'],
-                                       location_postal=combined_df.iloc[int(my_var)]['ADDRESSPOSTALCODE'],location_streetname=combined_df.iloc[int(my_var)]['ADDRESSSTREETNAME'],
-                                       user_email=current_user.email)
-        db.session.add(favourites_to_add)
-        db.session.commit()
-        flash("Favourites Added!")
+        check_add_dict = changeSQL_to_dict(combined_df.iloc[int(my_var)]['CATEGORY'])
+        for dicts in check_add_dict:
+            if combined_df.iloc[int(my_var)]['ADDRESSPOSTALCODE'] in dicts['location_postal'] and current_user.email == dicts['user_email']:
+                flash("Favourites has already been added!")
+                break
+        else:
+            favourites_to_add = Favourites(category=combined_df.iloc[int(my_var)]['CATEGORY'],location_name=combined_df.iloc[int(my_var)]['NAME'],
+                                           location_postal=combined_df.iloc[int(my_var)]['ADDRESSPOSTALCODE'],location_streetname=combined_df.iloc[int(my_var)]['ADDRESSSTREETNAME'],
+                                           user_email=current_user.email)
+            db.session.add(favourites_to_add)
+            db.session.commit()
+            flash("Favourites Added!")
     return render_template('thisBin.html', my_var = int(my_var), data = combined_df,form=form_favourite, source_string = source_string, url=url)
 
 
