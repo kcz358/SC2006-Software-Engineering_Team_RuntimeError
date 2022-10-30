@@ -455,7 +455,10 @@ def createFeedback():
 
     image_file = ""
     if form_feedback.validate_on_submit():
-        image_file = save_image(form_feedback.picture.data)
+        if form_feedback.picture.data == None:
+            image_file= "defaultbin.png"
+        else:
+            image_file = save_image(form_feedback.picture.data)
         feedback_to_create = Feedback(location=selected_entry,rating=form_feedback.rating.data,review=form_feedback.review.data, image_file=image_file)
         db.session.add(feedback_to_create)
         db.session.commit()
@@ -463,6 +466,7 @@ def createFeedback():
         return redirect(url_for('main.main_page'))
     image_url=url_for('static', filename="feedback_pics/"+image_file)
     return render_template("feedback.html", form=form_feedback, image_url=image_url, all_classes=default_classes, all_entries=default_values)
+
 
 @main.route("/favourite/eWaste", methods=['GET', 'POST'])
 @login_required
