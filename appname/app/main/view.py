@@ -112,8 +112,10 @@ def getcoordinates(address):
 
 def getAddress(lat,long):
     print("your lat is " + str(lat) + " long is " + str(long))
-    #token expires every 3 days, get a new one at one map api after 31 oct (pls update this date)
-    req = requests.get('https://developers.onemap.sg/privateapi/commonsvc/revgeocode?location=' + str(lat) +',' + str(long) + '&token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjkzNjEsInVzZXJfaWQiOjkzNjEsImVtYWlsIjoibWFyeXNvaGhjQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY2NzA1NzQ0NiwiZXhwIjoxNjY3NDg5NDQ2LCJuYmYiOjE2NjcwNTc0NDYsImp0aSI6IjFmMDJkY2UxZTFhZjIwY2E0YTA2OWZmNDVkZDkwYTYyIn0.XCBxU38zuV_5bJHgCytMTK-RRO0KhVcgS6hfWldJqZQ')
+    token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjkzNjEsInVzZXJfaWQiOjkzNjEsImVtYWlsIjoibWFyeXNvaGhjQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY2NzE4NTc5NCwiZXhwIjoxNjY3NjE3Nzk0LCJuYmYiOjE2NjcxODU3OTQsImp0aSI6ImZmZDNiY2I4NmQ3MjQxYTQyODY1MGQwOWRjZjQwMDg1In0.H0HHboQJMuQz7ShJmv82oOuMsWY_vhoR8RKmJ9HPr38'
+    #token expires every 3 days, get a new one at one map api after 3 nov 11am (pls update this date)
+    req = requests.get('https://developers.onemap.sg/privateapi/commonsvc/revgeocode?location=' + str(lat) +',' + str(long) +
+                       '&token='+ token)
     resultsdict = eval(req.text)
     print(resultsdict)
     if len(resultsdict['GeocodeInfo'])>0:
