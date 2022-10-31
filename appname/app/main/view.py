@@ -243,6 +243,8 @@ def findBin():
 
                 if (lat != None and long != None):
                     location = getAddress(lat, long)
+                    if location == None:
+                        location = str(lat) + ',' + str(long)
                     success=True
                     flash("Current location is: " + location)
 
