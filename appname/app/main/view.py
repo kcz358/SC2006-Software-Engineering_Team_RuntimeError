@@ -262,7 +262,7 @@ def findBin():
 
 
 #dummy dictionary
-labels = {0:"E-waste", 1:"2nd-hand", 2:"lightning waste", 3:"cash for trash"}
+labels = {0:"E-waste", 1:"2nd-hand", 2:"lighting waste", 3:"cash for trash"}
 
 @main.route("/inference_sync", methods = ['GET', 'POST'])
 def inference_sync():
@@ -288,7 +288,7 @@ def inference_sync():
     return "<p> No result </p>"
 
 #dummy dictionary
-labels = {0:"E-waste", 1:"2nd-hand", 2:"lightning waste", 3:"cash for trash"}
+labels = {0:"E-waste", 1:"2nd-hand", 2:"lighting waste", 3:"cash for trash"}
 
 
 @main.route("/findabin/thisbin", methods = ['GET', 'POST'])
