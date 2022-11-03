@@ -1,0 +1,25 @@
+The application skeleton is structured in different parts that has different responsibilities
+
+The application is packed in the app folder. Feel free to check for further details
+
+- main (Serve as the Blueprint folder of the application)
+	- __init__.py (initialization of the blueprint)
+	- view.py (Backend logic implementation)
+	- forms.py (Contains the form used for our application)
+
+- static (Contains all the static resources for application)
+	- css, js, fontawesome
+	- images, feedbackpics (Images required for the application)
+
+- templates (Contains the front end html files for the website)
+
+
+- __init__.py (Initialization of the package factory for the app)
+
+- initDataFrame.py (Initialization of the geo data for the locations of the bins)
+
+- mail.py (Contains the function to send email to user)
+
+- models.py (Contains the class model to control and initialize the database)
+
+- dataset (Contains the geolocation data for the bins)
