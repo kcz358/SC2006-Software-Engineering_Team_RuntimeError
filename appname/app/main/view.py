@@ -112,7 +112,7 @@ def getcoordinates(address):
 
 def getAddress(lat,long):
     print("your lat is " + str(lat) + " long is " + str(long))
-    token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjkzNjEsInVzZXJfaWQiOjkzNjEsImVtYWlsIjoibWFyeXNvaGhjQGdtYWlsLmNvbSIsImZvcmV2ZXIiOmZhbHNlLCJpc3MiOiJodHRwOlwvXC9vbTIuZGZlLm9uZW1hcC5zZ1wvYXBpXC92MlwvdXNlclwvc2Vzc2lvbiIsImlhdCI6MTY2NzE4NTc5NCwiZXhwIjoxNjY3NjE3Nzk0LCJuYmYiOjE2NjcxODU3OTQsImp0aSI6ImZmZDNiY2I4NmQ3MjQxYTQyODY1MGQwOWRjZjQwMDg1In0.H0HHboQJMuQz7ShJmv82oOuMsWY_vhoR8RKmJ9HPr38'
+    token = ''
     #token expires every 3 days, get a new one at one map api after 3 nov 11am (pls update this date)
     req = requests.get('https://developers.onemap.sg/privateapi/commonsvc/revgeocode?location=' + str(lat) +',' + str(long) +
                        '&token='+ token)
@@ -137,7 +137,7 @@ def getAddress(lat,long):
 
 def getRoute(source, dest, mode):
     # print("getting route")
-    api_key = 'AIzaSyDfTs7og5-oCAavy4pm_fVHBj6HkqaGLyU'
+    api_key = ''
     url = "https://maps.googleapis.com/maps/api/distancematrix/json?"
 
     payload={}
@@ -197,7 +197,7 @@ def getNearestBin(source, category, mode):
     return formatted_results
 
 def getCurrentLocation():
-    api_key = 'AIzaSyDfTs7og5-oCAavy4pm_fVHBj6HkqaGLyU'
+    api_key = ''
     url = "https://www.googleapis.com/geolocation/v1/geolocate?key="
 
     payload = {}
